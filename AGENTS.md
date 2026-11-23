@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Go 游戏服务器项目：gate/game 双服务，单模块；无 README、CI、测试或 lint 配置；尚未 git 初始化。
+Go 游戏服务器项目：gate/game 双服务，单模块；已 git 初始化（远端 `github.com/zhenhuasu/mgame`，分支 `main`），有 `README.md` 与 MIT `LICENSE`；无 CI、测试或 lint 配置。构建输出请用 `go build -o bin/ ./gate ./game`（`/gate`、`/game` 是源码目录，构建产物放 `bin/`，`.gitignore` 已忽略 `/bin/`）。
 
 ## 架构（已确认的意图）
 
