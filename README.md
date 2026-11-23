@@ -15,8 +15,11 @@ mgame/
 │   ├── auth/            # gate↔game HMAC-SHA256 签名/校验
 │   └── registry/        # 服务注册与发现（etcd / 内存静态实现）
 ├── gate/                # 网关服务：ws/wss 接入客户端，tcp 连 game
-│   ├── main.go
-│   └── network/         # ws 装配、game 连接池与发现、登录态、鉴权
+│   ├── main.go          # 入口：配置 + net.Init
+│   ├── app.go           # 装配：前端/后端/登录态接线 + 自注册 + 事件循环
+│   ├── frontend/        # 与客户端通信：ws 装配、客户端 handler、token 鉴权
+│   ├── backend/         # 与 game 通信：连接池、实例发现、内网 HMAC 握手
+│   └── session/         # 共享登录态（顶号 / 过期 / 广播）
 ├── game/                # 游戏服务：处理业务与玩家在线表
 ├── client/              # 测试客户端（Ping / 登录 / 广播 / Hello）
 ├── proto/               # protobuf（gate.proto 客户端协议 + inner.proto 内网协议）

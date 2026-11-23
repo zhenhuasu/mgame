@@ -1,9 +1,9 @@
-package network
+// Package frontend 与客户端通信侧：ws 装配、客户端消息处理、token 鉴权。
+package frontend
 
 import (
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 
@@ -16,9 +16,6 @@ type TokenVerifier func(account string, uid int64, token string) (int64, string,
 
 // VerifyToken 由 ConfigureAuth 按配置注入，默认 dev 占位校验
 var VerifyToken TokenVerifier = devVerifier
-
-// gateSecret gate↔game 共享密钥（ConfigureAuth 注入；空 = 不校验，仅联调）
-var gateSecret string
 
 // debugHandlers 是否注册联调后门 handler（仅 dev 模式）
 var debugHandlers = true
@@ -66,19 +63,15 @@ func newJWTVerifier(secret string) TokenVerifier {
 	}
 }
 
-// ConfigureAuth 按配置注入 token 校验器、会话 TTL 与内网密钥。
-// 须在 Listen/Connect 之前调用。
-func ConfigureAuth(cfg *config.Gate) {
-	switch cfg.Auth.Mode {
+// Configure 按 auth 配置注入 token 校验器与联调后门开关。
+// 须在前端启动前调用；会话 TTL 由 session.New 创建时注入。
+func Configure(cfg config.Auth) {
+	switch cfg.Mode {
 	case "jwt":
-		VerifyToken = newJWTVerifier(cfg.Auth.JWTSecret)
+		VerifyToken = newJWTVerifier(cfg.JWTSecret)
 		debugHandlers = false
 	default:
 		VerifyToken = devVerifier
 		debugHandlers = true
 	}
-	if cfg.Auth.TokenTTL > 0 {
-		mgr.SetTTL(time.Duration(cfg.Auth.TokenTTL) * time.Second)
-	}
-	gateSecret = cfg.GateSecret
 }

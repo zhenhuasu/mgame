@@ -1,4 +1,6 @@
-package network
+// Package session 客户端登录态注册表：frontend 用它维护/广播，
+// backend 用它按 uid 回投客户端消息（两侧共同依赖，避免循环 import）。
+package session
 
 import (
 	"sync"
@@ -25,18 +27,14 @@ type Manager struct {
 	ttl       time.Duration        // 会话有效期，0 = 不过期
 }
 
-func NewManager() *Manager {
+// New 创建登录态注册表；ttl 为会话有效期（0 = 不过期），
+// 由 gate 入口按 auth.tokenTTL 注入。
+func New(ttl time.Duration) *Manager {
 	return &Manager{
 		byUID:     make(map[int64]*LoginInfo),
 		bySession: make(map[int64]int64),
+		ttl:       ttl,
 	}
-}
-
-// SetTTL 设置会话有效期（0 = 不过期），由 ConfigureAuth 注入
-func (m *Manager) SetTTL(d time.Duration) {
-	m.mu.Lock()
-	m.ttl = d
-	m.mu.Unlock()
 }
 
 // Touch 刷新会话过期时间（业务消息活跃时调用）
@@ -185,12 +183,17 @@ func (m *Manager) onlineSessionIDsFor(uids []int64) []int64 {
 	return ids
 }
 
-// --- 由 Start 注入的外部依赖，避免 Manager 直接依赖 peer 细节 ---
+// --- 由 frontend ws acceptor 注入的会话查找，避免 Manager 依赖 peer 细节 ---
 
 var (
 	// sessionLookup sessionID → Session（acceptor.SessionAccessor.GetSession）
 	sessionLookup func(id int64) cellnet.Session
 )
+
+// SetLookup 注入 sessionID → Session 查找（frontend.Start 调用）
+func SetLookup(fn func(id int64) cellnet.Session) {
+	sessionLookup = fn
+}
 
 // --- 广播 ---
 // 发送在锁外进行（先取快照再 Send），避免持锁调用网络 IO。
