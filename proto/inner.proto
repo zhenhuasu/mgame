@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+// 与 gate.proto 同属一个 proto/Go package：
+// protoc-gen-msg 按 proto package 名生成 Go package 名，同目录必须一致
+package gate;
+
+option go_package = "github.com/zhenhuasu/mgame/proto;gate";
+
+// ---------- gate↔game 内网协议（tcp.ltv） ----------
+
+// 握手：gate 连上后先发
+// hmac = base64(HMAC-SHA256(gateSecret, gate_id|ts|nonce))，gateSecret 为空时留空
+message RegisterGate {
+  string gate_id = 1;
+  int64  ts      = 2;
+  string nonce   = 3;
+  string hmac    = 4;
+}
+
+message RegisterAck {
+  int32 code = 1; // 0=成功
+}
+
+// 玩家生命周期（gate → game）
+message PlayerOnline {
+  int64 uid = 1;
+  string account = 2;
+}
+
+message PlayerOffline {
+  int64 uid = 1;
+  int32 reason = 2; // 0=主动退出 1=断线 2=顶号迁移到其他实例
+}
+
+// 业务消息转发信封（外层只带 msgID+payload，不解析业务）
+message ForwardC2S {
+  int64 uid = 1;
+  uint32 msg_id = 2;
+  bytes payload = 3;
+}
+
+message ForwardS2C {
+  int64 uid = 1;
+  uint32 msg_id = 2;
+  bytes payload = 3;
+}
+
+// 演示业务消息：由 game 处理，验证 gate 全链路转发
+message HelloReq {
+  string content = 1;
+}
+
+message HelloAck {
+  string content = 1;
+}

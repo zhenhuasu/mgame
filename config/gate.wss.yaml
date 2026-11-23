@@ -1,0 +1,13 @@
+# 网关服务配置（wss 示例）
+listen: "0.0.0.0:8802"
+path: "/ws"
+protocol: wss
+certFile: "certs/cert.pem"
+keyFile: "certs/key.pem"
+logLevel: debug
+gateId: ""
+advertise: ""
+registry:
+  endpoints: []
+  prefix: ""
+  ttl: 10

@@ -1,0 +1,13 @@
+# 构建产物
+/bin/
+*.exe
+*.test
+
+# IDE
+.idea/
+
+# 证书（含私钥，勿提交）
+/certs/
+
+# 系统
+.DS_Store

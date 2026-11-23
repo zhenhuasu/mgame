@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package gate;
+
+option go_package = "github.com/zhenhuasu/mgame/proto;gate";
+
+// 客户端心跳/回环测试
+message PingReq {
+  int64 timestamp = 1;
+}
+
+message PingAck {
+  int64 timestamp = 1;
+  int64 session_id = 2;
+}
+
+// ---------- 登录/退出 ----------
+
+message LoginReq {
+  string account = 1;
+  int64 uid = 2;
+  string token = 3;
+}
+
+message LoginAck {
+  int32 code = 1; // 0=成功
+  string reason = 2;
+  int64 uid = 3;
+}
+
+message LogoutReq {}
+
+message LogoutAck {
+  int32 code = 1; // 0=成功
+  string reason = 2;
+}
+
+// 顶号：发给被踢的旧连接
+message KickNtf {
+  string reason = 1;
+}
+
+// ---------- 广播 ----------
+
+// 服务端下行广播载荷
+message NotifyNtf {
+  string content = 1;
+}
+
+// 联调用：触发广播（uids 为空=全局广播，否则按 uid 列表）
+// TODO 上线前移除或加权限校验
+message BroadcastReq {
+  repeated int64 uids = 1;
+  string content = 2;
+}
+
+message BroadcastAck {
+  int32 count = 1; // 实际送达会话数
+}

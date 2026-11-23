@@ -1,0 +1,15 @@
+# 游戏服务配置（第二个实例，用于负载均衡验证）
+listen: "127.0.0.1:8902"
+logLevel: debug
+
+# gate↔game 共享密钥（RegisterGate HMAC）；空=不校验，仅联调
+gateSecret: "dev-gate-secret"
+
+# 实例标识与对外可达地址（注册到 etcd 用，空 = 自动生成 / 回退 listen）
+gameId: ""
+advertise: ""
+# 服务注册与发现（etcd）；endpoints 空 = 不注册
+registry:
+  endpoints: [] # 如 ["127.0.0.1:2379"]
+  prefix: ""    # 空 = /mgame
+  ttl: 10       # 租约秒数

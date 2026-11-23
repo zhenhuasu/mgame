@@ -1,0 +1,28 @@
+# 网关服务配置
+listen: "0.0.0.0:8801"
+path: "/ws"
+protocol: ws # ws | wss
+certFile: "" # protocol=wss 时必填
+keyFile: ""
+logLevel: debug # debug | info | warn | error
+gateId: ""       # 空 = 自动 gate-<pid>
+gameServers:     # game 实例地址（后续可由 etcd 发现替换）
+  - "127.0.0.1:8901"
+  - "127.0.0.1:8902"
+
+# 客户端 token 鉴权
+auth:
+  mode: dev          # dev（占位校验） | jwt（HS256 本地验签）
+  jwtSecret: ""      # mode=jwt 时必填，需与签发方一致
+  tokenTTL: 7200     # 会话有效期（秒），0=不过期
+
+# gate↔game 共享密钥（RegisterGate HMAC）；空=不校验，仅联调
+gateSecret: "dev-gate-secret"
+
+# 对外可达地址（注册到 etcd 用，空 = 回退 listen）
+advertise: ""
+# 服务注册与发现（etcd）；endpoints 空 = 不启用（game 连接回退 gameServers）
+registry:
+  endpoints: [] # 如 ["127.0.0.1:2379"]
+  prefix: ""    # 空 = /mgame
+  ttl: 10       # 租约秒数
