@@ -41,14 +41,14 @@ func main() {
 	defer net.CloseRegistry()
 
 	// MongoDB：user/role 唯一持久层，连不上直接启动失败
-	mcli, err := mongo.Connect(ctx, cfg.Mongo)
+	mcli, err := mongo.Open(ctx, cfg.Mongo)
 	if err != nil {
 		log.Fatalf("mongo: %v", err)
 	}
 	defer func() {
 		dctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 		defer cancel()
-		_ = mcli.Disconnect(dctx)
+		_ = mcli.Close(dctx)
 	}()
 
 	// Redis：读缓存 + 全局 roleId 自增，连不上直接启动失败
@@ -59,7 +59,7 @@ func main() {
 	defer rdb.Close()
 
 	// 仓储：Mongo 持久 + Redis 读缓存装饰
-	r := repo.NewMongo(mongo.Database(mcli, cfg.Mongo))
+	r := repo.NewMongo(mcli.Database())
 	cctx, ccancel := context.WithTimeout(ctx, 5*time.Second)
 	if err := r.EnsureIndexes(cctx); err != nil {
 		ccancel()

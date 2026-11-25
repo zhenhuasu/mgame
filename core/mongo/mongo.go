@@ -1,5 +1,5 @@
-// Package mongo 封装 MongoDB 连接（各服务共用）；
-// 用户/角色等文档读写由各业务的仓储层负责。
+// Package mongo 封装 MongoDB 连接与通用 CRUD/索引助手（各服务共用）。
+// 文档结构、集合名、索引定义与业务错误语义由各业务仓储层负责。
 package mongo
 
 import (
@@ -14,9 +14,15 @@ import (
 	"github.com/zhenhuasu/mgame/config"
 )
 
-// Connect 建连并 Ping 校验（3s 超时）；失败返回 error，调用方按需 fail-fast。
-// 调用方在退出时对返回的 client 调 Disconnect。
-func Connect(ctx context.Context, cfg config.Mongo) (*mongo.Client, error) {
+// Client Mongo 客户端（连接 + 已选数据库），退出时须调用 Close
+type Client struct {
+	cli *mongo.Client
+	db  *mongo.Database
+}
+
+// Open 建连、Ping 校验（3s 超时）并选定业务数据库；失败返回 error，
+// 调用方按需 fail-fast。调用方在退出时对返回的 client 调 Close。
+func Open(ctx context.Context, cfg config.Mongo) (*Client, error) {
 	if !cfg.Enabled() {
 		return nil, fmt.Errorf("mongo.uri required")
 	}
@@ -31,10 +37,17 @@ func Connect(ctx context.Context, cfg config.Mongo) (*mongo.Client, error) {
 		_ = cli.Disconnect(context.Background())
 		return nil, fmt.Errorf("mongo ping %s: %w", cfg.URI, err)
 	}
-	return cli, nil
+	return &Client{cli: cli, db: cli.Database(cfg.Database)}, nil
 }
 
 // Database 取业务数据库
-func Database(cli *mongo.Client, cfg config.Mongo) *mongo.Database {
-	return cli.Database(cfg.Database)
-}
+func (c *Client) Database() *mongo.Database { return c.db }
+
+// Collection 取业务集合
+func (c *Client) Collection(name string) *mongo.Collection { return c.db.Collection(name) }
+
+// Raw 返回原始客户端（逃生口）
+func (c *Client) Raw() *mongo.Client { return c.cli }
+
+// Close 释放连接
+func (c *Client) Close(ctx context.Context) error { return c.cli.Disconnect(ctx) }

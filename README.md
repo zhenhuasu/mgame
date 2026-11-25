@@ -15,7 +15,7 @@ mgame/
 │   ├── auth/            # gate↔game HMAC-SHA256 签名/校验
 │   ├── registry/        # 服务注册与发现（etcd / 内存静态实现）
 │   ├── redis/           # Redis 连接与 get/set/del/incr（fail-fast）
-│   └── mongo/           # MongoDB 连接（fail-fast）
+│   └── mongo/           # MongoDB 连接 + 泛型 CRUD/索引助手（fail-fast）
 ├── gate/                # 网关服务：ws/wss 接入客户端，tcp 连 game
 │   ├── main.go          # 入口：配置 + net.Init
 │   ├── app.go           # 装配：前端/后端/登录态接线 + 自注册 + 事件循环
