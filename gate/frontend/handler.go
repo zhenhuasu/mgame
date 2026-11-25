@@ -1,6 +1,8 @@
 package frontend
 
 import (
+	stdnet "net"
+
 	"github.com/davyxu/cellnet"
 	"github.com/davyxu/cellnet/codec"
 
@@ -123,19 +125,48 @@ func (s *Server) handleLogin(ev cellnet.Event, req *pb.LoginReq) {
 		old.Close()
 	}
 
-	// 分配 game 实例并上报在线（顶号迁移到不同实例时先向旧实例下线）
-	if addr, prev, ok := s.games.Assign(uid, account); ok {
-		if prev != "" && prev != addr {
-			s.games.SendTo(prev, &pb.PlayerOffline{Uid: uid, Reason: 2})
-		}
-		s.games.SendTo(addr, &pb.PlayerOnline{Uid: uid, Account: account})
-		log.Infof("assign game uid=%d addr=%s", uid, addr)
-	} else {
+	// 分配 game 实例；顶号迁移到不同实例时先向旧实例下线
+	addr, prev, ok := s.games.Assign(uid, account)
+	if !ok {
 		log.Warnf("no game available uid=%d", uid)
+		s.mgr.RemoveBySession(ses.ID())
+		ses.Send(&pb.LoginAck{Code: 1, Reason: "no game available"})
+		return
+	}
+	if prev != "" && prev != addr {
+		s.games.SendTo(prev, &pb.PlayerOffline{Uid: uid, Reason: 2})
 	}
 
-	log.Infof("login ok session=%d account=%s uid=%d online=%d", ses.ID(), account, uid, s.mgr.OnlineCount())
-	ses.Send(&pb.LoginAck{Code: 0, Uid: uid})
+	// 登录握手：由 game 加载用户并回 PlayerLoginAck，成功后经 backend 回 LoginAck（含角色）
+	// TODO 若 game 一直不回包，客户端会等待；后续补登录超时
+	if !s.games.SendTo(addr, &pb.PlayerLogin{
+		Uid:     uid,
+		Account: account,
+		Ip:      clientIP(ses),
+		Version: req.Version,
+	}) {
+		log.Warnf("send PlayerLogin failed uid=%d addr=%s", uid, addr)
+		s.games.Unassign(uid)
+		s.mgr.RemoveBySession(ses.ID())
+		ses.Send(&pb.LoginAck{Code: 1, Reason: "game unavailable"})
+		return
+	}
+
+	log.Infof("login accepted session=%d account=%s uid=%d addr=%s version=%q online=%d",
+		ses.ID(), account, uid, addr, req.Version, s.mgr.OnlineCount())
+}
+
+// clientIP 从会话底层连接取客户端出口 IP（取不到返回空）
+func clientIP(ses cellnet.Session) string {
+	c, ok := ses.Raw().(interface{ RemoteAddr() stdnet.Addr })
+	if !ok || c.RemoteAddr() == nil {
+		return ""
+	}
+	addr := c.RemoteAddr().String()
+	if host, _, err := stdnet.SplitHostPort(addr); err == nil {
+		return host
+	}
+	return addr
 }
 
 // requireLogin 校验会话已登录且未过期；过期则踢下线。通过时刷新活跃时间。

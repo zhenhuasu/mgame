@@ -6,6 +6,8 @@ package gate;
 
 option go_package = "github.com/zhenhuasu/mgame/proto;gate";
 
+import "gate.proto"; // RoleInfo
+
 // ---------- gate↔game 内网协议（tcp.ltv） ----------
 
 // 握手：gate 连上后先发
@@ -21,7 +23,7 @@ message RegisterAck {
   int32 code = 1; // 0=成功
 }
 
-// 玩家生命周期（gate → game）
+// 玩家上线（gate → game，断线重连后补登记用，不触发用户加载）
 message PlayerOnline {
   int64 uid = 1;
   string account = 2;
@@ -30,6 +32,22 @@ message PlayerOnline {
 message PlayerOffline {
   int64 uid = 1;
   int32 reason = 2; // 0=主动退出 1=断线 2=顶号迁移到其他实例
+}
+
+// 登录握手（gate → game，仅客户端真正登录时发一次）
+message PlayerLogin {
+  int64 uid = 1;
+  string account = 2; // 唯一键
+  string ip = 3;      // 客户端出口 IP（gate 采集）
+  string version = 4; // 客户端版本号
+}
+
+// 登录结果（game → gate），code=0 时 roles 为该账号角色列表
+message PlayerLoginAck {
+  int64 uid = 1;
+  int32 code = 2; // 0=成功
+  string reason = 3;
+  repeated RoleInfo roles = 4;
 }
 
 // 业务消息转发信封（外层只带 msgID+payload，不解析业务）

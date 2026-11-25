@@ -10,19 +10,17 @@ import (
 	"github.com/zhenhuasu/mgame/config"
 	"github.com/zhenhuasu/mgame/core/net"
 	"github.com/zhenhuasu/mgame/core/registry"
+	"github.com/zhenhuasu/mgame/game/handler"
 )
 
-var log = golog.New("game")
+var log = golog.New("game.network")
 
 // Listen 监听 gate 连入（第2步）：注册处理函数、建对内 acceptor，
 // 启动后经 net.RegisterSelf 注册自身（未启用注册中心时 no-op），
 // 内部阻塞在事件循环直到 ctx 取消（优雅下线）或退出。
-func Listen(ctx context.Context, cfg *config.Game) error {
-	// 内网握手共享密钥（空 = 不校验，仅联调）
-	gateSecret = cfg.GateSecret
-
+func Listen(ctx context.Context, cfg *config.Game, h *handler.Handler) error {
 	// 注册对内处理函数（须在起循环前）
-	registerHandlers()
+	h.Register()
 
 	net.Listen(net.Options{
 		Name: "game",

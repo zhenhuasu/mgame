@@ -16,16 +16,25 @@ message PingAck {
 
 // ---------- 登录/退出 ----------
 
+// 角色信息（客户端展示用）
+message RoleInfo {
+  int64 role_id = 1;
+  string name = 2;
+  int32 level = 3;
+}
+
 message LoginReq {
   string account = 1;
   int64 uid = 2;
   string token = 3;
+  string version = 4; // 客户端版本号
 }
 
 message LoginAck {
   int32 code = 1; // 0=成功
   string reason = 2;
   int64 uid = 3;
+  repeated RoleInfo roles = 4; // 登录成功后由 game 加载的角色列表
 }
 
 message LogoutReq {}
@@ -33,6 +42,30 @@ message LogoutReq {}
 message LogoutAck {
   int32 code = 1; // 0=成功
   string reason = 2;
+}
+
+// ---------- 角色 / 进入游戏 ----------
+
+// 创建角色（登录后角色列表为空时发送）
+message CreateRoleReq {
+  string name = 1; // 同账号内唯一
+}
+
+message CreateRoleAck {
+  int32 code = 1; // 0=成功
+  string reason = 2;
+  RoleInfo role = 3;
+}
+
+// 进入游戏：从登录返回的角色列表选一个 role_id
+message EnterGameReq {
+  int64 role_id = 1; // 0 = 请求服务端默认创建（受服务端 user.autoCreateRole 开关控制）
+}
+
+message EnterGameAck {
+  int32 code = 1; // 0=成功
+  string reason = 2;
+  RoleInfo role = 3;
 }
 
 // 顶号：发给被踢的旧连接

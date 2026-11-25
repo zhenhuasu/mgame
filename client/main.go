@@ -25,7 +25,7 @@ var log = golog.New("client")
 
 // 事件流：handler → 主流程按类型等待
 type evt struct {
-	kind string // connected/loginack/logoutack/broadcastack/notify/kick/closed/pingack/connecterr
+	kind string // connected/loginack/logoutack/broadcastack/notify/kick/closed/pingack/connecterr/createroleack/entergameack
 	raw  interface{}
 }
 
@@ -35,11 +35,15 @@ func main() {
 	uid := flag.Int64("uid", 0, "uid（>0 触发登录流程）")
 	token := flag.String("token", "", "token")
 	jwtSecret := flag.String("jwt-secret", "", "非空则本地签发 HS256 token（覆盖 -token）")
+	version := flag.String("version", "1.0.0", "客户端版本号（随登录上报）")
 	broadcast := flag.Bool("broadcast", false, "登录后触发一次广播")
 	uidsFlag := flag.String("uids", "", "广播 uid 列表，逗号分隔；空=全局")
 	content := flag.String("content", "hello", "广播内容")
 	logout := flag.Bool("logout", false, "广播后发送退出")
 	hello := flag.Bool("hello", false, "登录后发送 HelloReq（经 gate→game 全链路）")
+	roleID := flag.Int64("role", 0, "进入游戏的角色 id（0=按 -flow 自动处理；-flow enter 时 0 原样交服务端默认处理）")
+	flow := flag.String("flow", "", "进入流程：create=先建角色；enter=按 -role 直接进入；空=有角色进入/无角色先建")
+	roleName := flag.String("role-name", "", "CreateRole 角色名（空=账号名）")
 	wait := flag.Duration("wait", 2*time.Second, "登录/广播后等待通知的时长")
 	flag.Parse()
 
@@ -79,6 +83,12 @@ func main() {
 		case *pb.HelloAck:
 			log.Infof("HelloAck content=%q", msg.Content)
 			events <- evt{"helloack", msg}
+
+		case *pb.CreateRoleAck:
+			events <- evt{"createroleack", msg}
+
+		case *pb.EnterGameAck:
+			events <- evt{"entergameack", msg}
 
 		case *cellnet.SessionClosed:
 			log.Infof("closed: %v", msg.Reason)
@@ -150,7 +160,7 @@ func main() {
 		}
 		loginToken = t
 	}
-	conn.Send(&pb.LoginReq{Account: *account, Uid: *uid, Token: loginToken})
+	conn.Send(&pb.LoginReq{Account: *account, Uid: *uid, Token: loginToken, Version: *version})
 	rawAck, ok := waitFor("loginack", 3*time.Second)
 	if !ok {
 		log.Errorf("login ack timeout")
@@ -161,9 +171,61 @@ func main() {
 		log.Errorf("login failed code=%d reason=%q", ack.Code, ack.Reason)
 		exit(1)
 	}
-	log.Infof("login ok uid=%d", ack.Uid)
+	log.Infof("login ok uid=%d roles=%d", ack.Uid, len(ack.Roles))
+	for _, r := range ack.Roles {
+		log.Infof("  role id=%d name=%q level=%d", r.RoleId, r.Name, r.Level)
+	}
 
-	// 3.5 Hello 全链路：client → gate → game → gate → client
+	// 3.5 进入游戏：-flow 指定流程，空 = 有角色直接进 / 无角色先建
+	// send+wait 两个工具函数
+	createRole := func() *pb.RoleInfo {
+		conn.Send(&pb.CreateRoleReq{Name: *roleName})
+		raw, ok := waitFor("createroleack", 3*time.Second)
+		if !ok {
+			log.Errorf("create role ack timeout")
+			exit(1)
+		}
+		crAck := raw.(*pb.CreateRoleAck)
+		if crAck.Code != 0 {
+			log.Errorf("create role failed code=%d reason=%q", crAck.Code, crAck.Reason)
+			exit(1)
+		}
+		log.Infof("create role ok id=%d name=%q level=%d", crAck.Role.RoleId, crAck.Role.Name, crAck.Role.Level)
+		return crAck.Role
+	}
+	enterGame := func(id int64) {
+		conn.Send(&pb.EnterGameReq{RoleId: id})
+		raw, ok := waitFor("entergameack", 3*time.Second)
+		if !ok {
+			log.Errorf("enter game ack timeout")
+			exit(1)
+		}
+		egAck := raw.(*pb.EnterGameAck)
+		if egAck.Code != 0 {
+			log.Errorf("enter game failed code=%d reason=%q", egAck.Code, egAck.Reason)
+			exit(1)
+		}
+		log.Infof("enter game ok role_id=%d name=%q level=%d", egAck.Role.RoleId, egAck.Role.Name, egAck.Role.Level)
+	}
+
+	switch *flow {
+	case "create":
+		enterGame(createRole().RoleId)
+	case "enter":
+		enterGame(*roleID)
+	default: // 空
+		if len(ack.Roles) == 0 {
+			enterGame(createRole().RoleId)
+		} else {
+			id := *roleID
+			if id == 0 {
+				id = ack.Roles[0].RoleId
+			}
+			enterGame(id)
+		}
+	}
+
+	// 3.6 Hello 全链路：client → gate → game → gate → client
 	if *hello {
 		conn.Send(&pb.HelloReq{Content: *content})
 		rawHl, ok := waitFor("helloack", 3*time.Second)

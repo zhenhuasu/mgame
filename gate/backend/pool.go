@@ -21,6 +21,7 @@ type Pool struct {
 
 	mu      sync.Mutex
 	conns   map[string]cellnet.Peer // gameAddr → tcp.Connector
+	up      map[string]bool         // gameAddr → 连接是否就绪
 	rr      int
 	routes  map[int64]*gameRoute // uid → 路由
 	account map[int64]string     // uid → account（重连补发 PlayerOnline 用）
@@ -38,6 +39,7 @@ func New(gateID string, dis Discovery, hub *session.Manager) *Pool {
 		dis:     dis,
 		hub:     hub,
 		conns:   make(map[string]cellnet.Peer),
+		up:      make(map[string]bool),
 		routes:  make(map[int64]*gameRoute),
 		account: make(map[int64]string),
 	}
@@ -172,6 +174,9 @@ func (g *Pool) RouteOf(uid int64) (string, bool) {
 func (g *Pool) SendTo(addr string, msg interface{}) bool {
 	g.mu.Lock()
 	p, ok := g.conns[addr]
+	if ok && !g.up[addr] {
+		ok = false
+	}
 	g.mu.Unlock()
 	if !ok {
 		return false
@@ -184,6 +189,13 @@ func (g *Pool) SendTo(addr string, msg interface{}) bool {
 	return true
 }
 
+// setUp 标记连接就绪状态
+func (g *Pool) setUp(addr string, up bool) {
+	g.mu.Lock()
+	g.up[addr] = up
+	g.mu.Unlock()
+}
+
 // pickLocked 轮询选择一个已连接的 game
 func (g *Pool) pickLocked() (string, bool) {
 	addrs := g.dis.Addrs()
@@ -194,7 +206,7 @@ func (g *Pool) pickLocked() (string, bool) {
 		idx := (g.rr + i) % len(addrs)
 		addr := addrs[idx]
 		p, ok := g.conns[addr]
-		if !ok {
+		if !ok || !g.up[addr] {
 			continue
 		}
 		ses := p.(cellnet.TCPConnector).Session()
