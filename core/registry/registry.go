@@ -13,8 +13,9 @@ import (
 
 // 预置服务名（后续服务自行扩展）
 const (
-	ServiceGate = "gate"
-	ServiceGame = "game"
+	ServiceGate  = "gate"
+	ServiceGame  = "game"
+	ServiceGuild = "guild"
 )
 
 // Instance 注册的服务实例

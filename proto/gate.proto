@@ -90,3 +90,185 @@ message BroadcastReq {
 message BroadcastAck {
   int32 count = 1; // 实际送达会话数
 }
+
+// ---------- 公会 ----------
+
+// 公会职位
+enum GuildPosition {
+  GUILD_POSITION_NONE = 0;
+  GUILD_POSITION_LEADER = 1; // 会长
+  GUILD_POSITION_VICE = 2;   // 副会长/管理员
+  GUILD_POSITION_MEMBER = 3; // 成员
+}
+
+// 加入方式
+enum GuildJoinMode {
+  GUILD_JOIN_OPEN = 0;        // 公开直接加入
+  GUILD_JOIN_INVITE_ONLY = 1; // 仅邀请加入
+}
+
+// 公会关键事件类型
+enum GuildEventKind {
+  GUILD_EVENT_NONE = 0;
+  GUILD_EVENT_KICKED = 1;   // 被踢
+  GUILD_EVENT_DISBANDED = 2;// 公会解散
+  GUILD_EVENT_TRANSFER = 3; // 会长转让
+  GUILD_EVENT_POSITION = 4; // 职位变更
+}
+
+message GuildInfo {
+  int64 guild_id = 1;
+  string name = 2;
+  int64 leader_role_id = 3;
+  string notice = 4;
+  int32 level = 5;
+  int32 member_count = 6;
+  GuildJoinMode join_mode = 7;
+}
+
+message GuildMemberInfo {
+  int64 role_id = 1;
+  string name = 2;
+  int32 level = 3;
+  GuildPosition position = 4;
+  int64 joined_at = 5; // unix 秒
+}
+
+message GuildInviteInfo {
+  int64 guild_id = 1;
+  string guild_name = 2;
+  int64 invited_by = 3;
+  string invited_by_name = 4;
+  int64 created_at = 5; // unix 秒
+}
+
+message CreateGuildReq {
+  string name = 1; // 全局唯一
+}
+message CreateGuildAck {
+  int32 code = 1;
+  string reason = 2;
+  GuildInfo guild = 3;
+}
+
+message JoinGuildReq {
+  int64 guild_id = 1;
+}
+message JoinGuildAck {
+  int32 code = 1;
+  string reason = 2;
+  GuildInfo guild = 3;
+}
+
+message LeaveGuildReq {}
+message LeaveGuildAck {
+  int32 code = 1;
+  string reason = 2;
+}
+
+message KickGuildMemberReq {
+  int64 role_id = 1;
+}
+message KickGuildMemberAck {
+  int32 code = 1;
+  string reason = 2;
+}
+
+message TransferLeaderReq {
+  int64 role_id = 1;
+}
+message TransferLeaderAck {
+  int32 code = 1;
+  string reason = 2;
+}
+
+message SetGuildNoticeReq {
+  string notice = 1;
+}
+message SetGuildNoticeAck {
+  int32 code = 1;
+  string reason = 2;
+}
+
+message SetJoinModeReq {
+  GuildJoinMode mode = 1;
+}
+message SetJoinModeAck {
+  int32 code = 1;
+  string reason = 2;
+}
+
+message SetMemberPositionReq {
+  int64 role_id = 1;
+  GuildPosition position = 2; // 仅 LEADER 可设为 VICE/MEMBER；会长不可通过此接口设置
+}
+message SetMemberPositionAck {
+  int32 code = 1;
+  string reason = 2;
+}
+
+message DisbandGuildReq {}
+message DisbandGuildAck {
+  int32 code = 1;
+  string reason = 2;
+}
+
+message GetGuildInfoReq {
+  int64 guild_id = 1; // 0 = 自己所在公会
+}
+message GetGuildInfoAck {
+  int32 code = 1;
+  string reason = 2;
+  GuildInfo guild = 3;
+  repeated GuildMemberInfo members = 4;
+}
+
+message ListGuildsReq {}
+message ListGuildsAck {
+  int32 code = 1;
+  string reason = 2;
+  repeated GuildInfo guilds = 3;
+}
+
+message InviteMemberReq {
+  int64 role_id = 1; // role_id 优先
+  string name = 2;   // role_id=0 时按角色名解析（全局唯一）
+}
+message InviteMemberAck {
+  int32 code = 1;
+  string reason = 2;
+}
+
+message ListInvitesReq {}
+message ListInvitesAck {
+  int32 code = 1;
+  string reason = 2;
+  repeated GuildInviteInfo invites = 3;
+}
+
+message RespondInviteReq {
+  int64 guild_id = 1;
+  bool accept = 2;
+}
+message RespondInviteAck {
+  int32 code = 1;
+  string reason = 2;
+  GuildInfo guild = 3; // accept 成功时返回
+}
+
+// 邀请到达通知（推送给被邀请的在线角色）
+message GuildInviteNtf {
+  int64 guild_id = 1;
+  string guild_name = 2;
+  int64 invited_by = 3;
+  string invited_by_name = 4;
+}
+
+// 公会关键事件通知（被踢/解散/转让/职位变更）
+message GuildEventNtf {
+  GuildEventKind kind = 1;
+  int64 guild_id = 2;
+  string guild_name = 3;
+  GuildPosition position = 4; // 职位变更时的新职位
+  int64 operator_role_id = 5;
+}

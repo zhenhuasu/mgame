@@ -7,6 +7,7 @@ import (
 
 	"github.com/davyxu/cellnet"
 
+	"github.com/zhenhuasu/mgame/core/discover"
 	"github.com/zhenhuasu/mgame/core/net"
 	"github.com/zhenhuasu/mgame/gate/session"
 )
@@ -16,7 +17,7 @@ import (
 // 事件回调与客户端消息同在一个 EventQueue 内串行执行；加锁仅为防御未来跨 goroutine 调用。
 type Pool struct {
 	gateID string
-	dis    Discovery
+	dis    discover.Discovery
 	hub    *session.Manager // 登录态：game→客户端回投时按 uid 查会话
 
 	mu      sync.Mutex
@@ -33,7 +34,7 @@ type gameRoute struct {
 }
 
 // New 创建连接池；hub 为共享登录态（gate 入口创建）
-func New(gateID string, dis Discovery, hub *session.Manager) *Pool {
+func New(gateID string, dis discover.Discovery, hub *session.Manager) *Pool {
 	return &Pool{
 		gateID:  gateID,
 		dis:     dis,

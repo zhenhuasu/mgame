@@ -90,6 +90,171 @@ func init() {
 		Type:  reflect.TypeOf((*BroadcastAck)(nil)).Elem(),
 		ID:    37393,
 	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*GuildInfo)(nil)).Elem(),
+		ID:    21744,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*GuildMemberInfo)(nil)).Elem(),
+		ID:    9960,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*GuildInviteInfo)(nil)).Elem(),
+		ID:    28415,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*CreateGuildReq)(nil)).Elem(),
+		ID:    45728,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*CreateGuildAck)(nil)).Elem(),
+		ID:    7559,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*JoinGuildReq)(nil)).Elem(),
+		ID:    52540,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*JoinGuildAck)(nil)).Elem(),
+		ID:    14371,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*LeaveGuildReq)(nil)).Elem(),
+		ID:    27961,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*LeaveGuildAck)(nil)).Elem(),
+		ID:    55328,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*KickGuildMemberReq)(nil)).Elem(),
+		ID:    14022,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*KickGuildMemberAck)(nil)).Elem(),
+		ID:    41389,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*TransferLeaderReq)(nil)).Elem(),
+		ID:    9705,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*TransferLeaderAck)(nil)).Elem(),
+		ID:    37072,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*SetGuildNoticeReq)(nil)).Elem(),
+		ID:    64570,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*SetGuildNoticeAck)(nil)).Elem(),
+		ID:    26401,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*SetJoinModeReq)(nil)).Elem(),
+		ID:    6040,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*SetJoinModeAck)(nil)).Elem(),
+		ID:    33407,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*SetMemberPositionReq)(nil)).Elem(),
+		ID:    45968,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*SetMemberPositionAck)(nil)).Elem(),
+		ID:    7799,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*DisbandGuildReq)(nil)).Elem(),
+		ID:    33729,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*DisbandGuildAck)(nil)).Elem(),
+		ID:    61096,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*GetGuildInfoReq)(nil)).Elem(),
+		ID:    27224,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*GetGuildInfoAck)(nil)).Elem(),
+		ID:    54591,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*ListGuildsReq)(nil)).Elem(),
+		ID:    59611,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*ListGuildsAck)(nil)).Elem(),
+		ID:    21442,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*InviteMemberReq)(nil)).Elem(),
+		ID:    17822,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*InviteMemberAck)(nil)).Elem(),
+		ID:    45189,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*ListInvitesReq)(nil)).Elem(),
+		ID:    7989,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*ListInvitesAck)(nil)).Elem(),
+		ID:    35356,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*RespondInviteReq)(nil)).Elem(),
+		ID:    42145,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*RespondInviteAck)(nil)).Elem(),
+		ID:    3976,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*GuildInviteNtf)(nil)).Elem(),
+		ID:    45211,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*GuildEventNtf)(nil)).Elem(),
+		ID:    54382,
+	})
 	// inner.proto
 	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
 		Codec: codec.MustGetCodec("gogopb"),
@@ -123,8 +288,8 @@ func init() {
 	})
 	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
 		Codec: codec.MustGetCodec("gogopb"),
-		Type:  reflect.TypeOf((*ForwardC2S)(nil)).Elem(),
-		ID:    64652,
+		Type:  reflect.TypeOf((*Transmit)(nil)).Elem(),
+		ID:    34881,
 	})
 	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
 		Codec: codec.MustGetCodec("gogopb"),
@@ -140,5 +305,20 @@ func init() {
 		Codec: codec.MustGetCodec("gogopb"),
 		Type:  reflect.TypeOf((*HelloAck)(nil)).Elem(),
 		ID:    8402,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*RegisterGame)(nil)).Elem(),
+		ID:    43438,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*GuildS2C)(nil)).Elem(),
+		ID:    30988,
+	})
+	cellnet.RegisterMessageMeta(&cellnet.MessageMeta{
+		Codec: codec.MustGetCodec("gogopb"),
+		Type:  reflect.TypeOf((*GuildNotify)(nil)).Elem(),
+		ID:    23677,
 	})
 }

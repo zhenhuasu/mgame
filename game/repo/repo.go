@@ -27,6 +27,8 @@ type UserRepo interface {
 	LoadRoles(ctx context.Context, account string) ([]model.Role, error)
 	// LoadRole 读取单个角色完整数据（按 account 限定归属）；不存在返回 (nil, false, nil)
 	LoadRole(ctx context.Context, account string, roleID int64) (*model.Role, bool, error)
+	// LoadRoleByName 按角色名（全局唯一）读取角色；不存在返回 (nil, false, nil)
+	LoadRoleByName(ctx context.Context, name string) (*model.Role, bool, error)
 	// CreateRole 插入角色（role.Account 为归属账号，role.ID 由调用方生成）；
 	// 重名返回 ErrRoleNameExists
 	CreateRole(ctx context.Context, role *model.Role) error

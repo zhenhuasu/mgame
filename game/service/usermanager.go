@@ -104,6 +104,30 @@ func (m *UserManager) Get(uid int64) (*OnlineUser, bool) {
 	return ou, ok
 }
 
+// OnlineRole 取用户当前在线角色（未 EnterGame 返回 false）
+func (m *UserManager) OnlineRole(uid int64) (*model.Role, bool) {
+	ou, ok := m.users[uid]
+	if !ok || ou.User.OnlineRole == nil {
+		return nil, false
+	}
+	return ou.User.OnlineRole, true
+}
+
+// RoleByName 按角色名（全局唯一）查角色
+func (m *UserManager) RoleByName(ctx context.Context, name string) (*model.Role, bool, error) {
+	return m.repo.LoadRoleByName(ctx, name)
+}
+
+// FindOnlineByRole 按在线角色 ID 查所属 uid（公会推送命中）
+func (m *UserManager) FindOnlineByRole(roleID int64) (int64, bool) {
+	for uid, ou := range m.users {
+		if ou.User.OnlineRole != nil && ou.User.OnlineRole.ID == roleID {
+			return uid, true
+		}
+	}
+	return 0, false
+}
+
 // CreateRole 创建角色：全局 ID（Redis INCR）→ 仓储插入 → 回填内存 RoleIDs。
 // name 为空回退账号名（同账号内唯一，由 Mongo 唯一索引兜底）。
 func (m *UserManager) CreateRole(ctx context.Context, uid int64, name string) (*model.Role, error) {

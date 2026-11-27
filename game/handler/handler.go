@@ -7,6 +7,7 @@ import (
 	"github.com/davyxu/golog"
 
 	"github.com/zhenhuasu/mgame/core/net"
+	"github.com/zhenhuasu/mgame/core/svcproc"
 	"github.com/zhenhuasu/mgame/game/service"
 
 	pb "github.com/zhenhuasu/mgame/proto"
@@ -14,19 +15,26 @@ import (
 
 var log = golog.New("game.handler")
 
+// GuildSender game→guild 发送接口（guildclient.Pool 实现；nil = 无公会服务）
+type GuildSender interface {
+	Send(t *pb.Transmit) bool
+}
+
 // Handler 消息处理单元：持有用户管理器与握手表（事件在单队列内串行，无需加锁）
 type Handler struct {
 	mgr    *service.UserManager
 	secret string // gate↔game 内网密钥，空 = 不校验
+	guild  GuildSender
 
 	authed map[int64]bool // 已完成 RegisterGate 握手的 gate 会话
 }
 
 // New 创建处理单元
-func New(mgr *service.UserManager, gateSecret string) *Handler {
+func New(mgr *service.UserManager, gateSecret string, guild GuildSender) *Handler {
 	return &Handler{
 		mgr:    mgr,
 		secret: gateSecret,
+		guild:  guild,
 		authed: make(map[int64]bool),
 	}
 }
@@ -42,4 +50,20 @@ func (h *Handler) Register() {
 
 func (h *Handler) isAuthed(ses cellnet.Session) bool {
 	return h.authed[ses.ID()]
+}
+
+// registerAuthed 注册客户端最终协议处理函数：队列内校验握手与 Transmit 上下文
+func (h *Handler) registerAuthed(msg interface{}, fn func(cellnet.Event, svcproc.TransmitContext)) {
+	net.Register(msg, func(ev cellnet.Event) {
+		rc, ok := svcproc.ContextOf(ev)
+		if !ok {
+			log.Warnf("drop %T: missing transmit context session=%d", ev.Message(), ev.Session().ID())
+			return
+		}
+		if !h.isAuthed(ev.Session()) {
+			log.Warnf("drop %T from unauthenticated session=%d uid=%d", ev.Message(), ev.Session().ID(), rc.UID)
+			return
+		}
+		fn(ev, rc)
+	})
 }

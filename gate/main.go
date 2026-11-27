@@ -25,7 +25,7 @@ func main() {
 	if err := net.Init(net.InitOptions{
 		LogLevel: cfg.LogLevel,
 		// 正则子串匹配："gorillaws"→gorillaws+gorillawsproc，"gate"→gate+gateproc，"tcp"→tcppeer，"svc"→svcproc
-		LogNames: []string{"gorillaws", "tcp", "gate", "svc"},
+		LogNames: []string{"gorillaws", "tcp", "gate", "svc", "discover"},
 		Registry: cfg.Registry,
 	}); err != nil {
 		log.Fatalf("init: %v", err)

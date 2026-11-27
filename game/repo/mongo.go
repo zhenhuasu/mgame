@@ -156,6 +156,15 @@ func (r *mongoRepo) LoadRole(ctx context.Context, account string, roleID int64) 
 	return &model.Role{ID: doc.RoleID, Account: doc.Account, Name: doc.Name, Level: doc.Level}, true, nil
 }
 
+// LoadRoleByName 按角色名（全局唯一）读取角色
+func (r *mongoRepo) LoadRoleByName(ctx context.Context, name string) (*model.Role, bool, error) {
+	doc, ok, err := dbmongo.Get[roleDoc](ctx, r.roles, bson.M{"name": name})
+	if err != nil || !ok {
+		return nil, ok, err
+	}
+	return &model.Role{ID: doc.RoleID, Account: doc.Account, Name: doc.Name, Level: doc.Level}, true, nil
+}
+
 // CreateRole 插入角色（不写 users，角色归属由 roles.account 表达）；
 // 唯一索引冲突映射为 ErrRoleNameExists
 func (r *mongoRepo) CreateRole(ctx context.Context, role *model.Role) error {

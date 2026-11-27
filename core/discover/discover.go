@@ -1,13 +1,20 @@
-package backend
+// Package discover 通用后端实例发现：注册中心 watch（etcD）与静态列表两种实现。
+// gate（发现 game）与 game（发现 guild）共用。
+package discover
 
 import (
 	"context"
 	"sync"
 
+	"github.com/davyxu/golog"
+
 	"github.com/zhenhuasu/mgame/core/registry"
 )
 
-// Discovery 上游服务（game）实例发现：注册中心 watch 与静态配置两种实现。
+// log 独立日志名（net.Init 通过 LogNames 纳入 LogLevel）
+var log = golog.New("discover")
+
+// Discovery 后端实例发现
 type Discovery interface {
 	// Addrs 当前实例地址快照
 	Addrs() []string
@@ -16,21 +23,23 @@ type Discovery interface {
 	Watch(ctx context.Context, cb func([]string)) (cancel func())
 }
 
-// StaticDiscovery 静态地址列表（config.Gate.GameServers，registry 未启用时回退）
-type StaticDiscovery []string
+// Static 静态地址列表（配置未启用注册中心时回退）
+type Static []string
 
-func (s StaticDiscovery) Addrs() []string { return append([]string(nil), s...) }
+// Addrs 返回地址快照
+func (s Static) Addrs() []string { return append([]string(nil), s...) }
 
-func (s StaticDiscovery) Watch(ctx context.Context, cb func([]string)) (cancel func()) {
+// Watch 立即回调一次全量地址
+func (s Static) Watch(ctx context.Context, cb func([]string)) (cancel func()) {
 	if cb != nil {
 		cb(s.Addrs())
 	}
 	return func() {}
 }
 
-// RegistryDiscovery 基于注册中心的服务发现，内部维护地址快照（latest-wins）。
+// Registry 基于注册中心的服务发现，内部维护地址快照（latest-wins）。
 // watch 启动失败（etcd 不可达）时回退 fallback 静态地址。
-type RegistryDiscovery struct {
+type Registry struct {
 	reg      registry.Registry
 	service  string
 	fallback Discovery
@@ -39,24 +48,26 @@ type RegistryDiscovery struct {
 	addrs []string
 }
 
-// NewRegistryDiscovery 创建注册中心发现；fallback 用于 watch 启动失败时兜底
-func NewRegistryDiscovery(reg registry.Registry, service string, fallback Discovery) *RegistryDiscovery {
-	return &RegistryDiscovery{reg: reg, service: service, fallback: fallback}
+// NewRegistry 创建注册中心发现；fallback 用于 watch 启动失败时兜底
+func NewRegistry(reg registry.Registry, service string, fallback Discovery) *Registry {
+	return &Registry{reg: reg, service: service, fallback: fallback}
 }
 
-func (d *RegistryDiscovery) Addrs() []string {
+// Addrs 返回地址快照
+func (d *Registry) Addrs() []string {
 	d.mu.RLock()
 	defer d.mu.RUnlock()
 	return append([]string(nil), d.addrs...)
 }
 
-func (d *RegistryDiscovery) setAddrs(addrs []string) {
+func (d *Registry) setAddrs(addrs []string) {
 	d.mu.Lock()
 	d.addrs = append([]string(nil), addrs...)
 	d.mu.Unlock()
 }
 
-func (d *RegistryDiscovery) Watch(ctx context.Context, cb func([]string)) (cancel func()) {
+// Watch 订阅实例变化
+func (d *Registry) Watch(ctx context.Context, cb func([]string)) (cancel func()) {
 	wctx, cancelWatch := context.WithCancel(ctx)
 
 	ch, err := d.reg.Watch(wctx, d.service)
@@ -73,7 +84,7 @@ func (d *RegistryDiscovery) Watch(ctx context.Context, cb func([]string)) (cance
 
 	go func() {
 		for insts := range ch {
-			d.setAddrs(instancesAddrs(insts))
+			d.setAddrs(instanceAddrs(insts))
 			if cb != nil {
 				cb(d.Addrs())
 			}
@@ -82,7 +93,7 @@ func (d *RegistryDiscovery) Watch(ctx context.Context, cb func([]string)) (cance
 	return cancelWatch
 }
 
-func instancesAddrs(insts []registry.Instance) []string {
+func instanceAddrs(insts []registry.Instance) []string {
 	out := make([]string, 0, len(insts))
 	for _, inst := range insts {
 		out = append(out, inst.Addr)

@@ -7,6 +7,7 @@ import (
 	"github.com/davyxu/golog"
 
 	"github.com/zhenhuasu/mgame/config"
+	"github.com/zhenhuasu/mgame/core/discover"
 	"github.com/zhenhuasu/mgame/core/net"
 	"github.com/zhenhuasu/mgame/core/registry"
 	"github.com/zhenhuasu/mgame/gate/backend"
@@ -28,9 +29,9 @@ func run(ctx context.Context, cfg *config.Gate) error {
 	mgr := session.New(time.Duration(cfg.Auth.TokenTTL) * time.Second)
 
 	// 后端连接池：registry 启用时按注册中心发现 game，否则静态 GameServers
-	var dis backend.Discovery = backend.StaticDiscovery(cfg.GameServers)
+	var dis discover.Discovery = discover.Static(cfg.GameServers)
 	if reg := net.Registry(); reg != nil {
-		dis = backend.NewRegistryDiscovery(reg, registry.ServiceGame, dis)
+		dis = discover.NewRegistry(reg, registry.ServiceGame, dis)
 	}
 	pool := backend.New(cfg.GateID, dis, mgr)
 	pool.Start(ctx)

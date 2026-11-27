@@ -22,6 +22,99 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// 公会职位
+type GuildPosition int32
+
+const (
+	GuildPosition_GUILD_POSITION_NONE   GuildPosition = 0
+	GuildPosition_GUILD_POSITION_LEADER GuildPosition = 1
+	GuildPosition_GUILD_POSITION_VICE   GuildPosition = 2
+	GuildPosition_GUILD_POSITION_MEMBER GuildPosition = 3
+)
+
+var GuildPosition_name = map[int32]string{
+	0: "GUILD_POSITION_NONE",
+	1: "GUILD_POSITION_LEADER",
+	2: "GUILD_POSITION_VICE",
+	3: "GUILD_POSITION_MEMBER",
+}
+
+var GuildPosition_value = map[string]int32{
+	"GUILD_POSITION_NONE":   0,
+	"GUILD_POSITION_LEADER": 1,
+	"GUILD_POSITION_VICE":   2,
+	"GUILD_POSITION_MEMBER": 3,
+}
+
+func (x GuildPosition) String() string {
+	return proto.EnumName(GuildPosition_name, int32(x))
+}
+
+func (GuildPosition) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{0}
+}
+
+// 加入方式
+type GuildJoinMode int32
+
+const (
+	GuildJoinMode_GUILD_JOIN_OPEN        GuildJoinMode = 0
+	GuildJoinMode_GUILD_JOIN_INVITE_ONLY GuildJoinMode = 1
+)
+
+var GuildJoinMode_name = map[int32]string{
+	0: "GUILD_JOIN_OPEN",
+	1: "GUILD_JOIN_INVITE_ONLY",
+}
+
+var GuildJoinMode_value = map[string]int32{
+	"GUILD_JOIN_OPEN":        0,
+	"GUILD_JOIN_INVITE_ONLY": 1,
+}
+
+func (x GuildJoinMode) String() string {
+	return proto.EnumName(GuildJoinMode_name, int32(x))
+}
+
+func (GuildJoinMode) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{1}
+}
+
+// 公会关键事件类型
+type GuildEventKind int32
+
+const (
+	GuildEventKind_GUILD_EVENT_NONE      GuildEventKind = 0
+	GuildEventKind_GUILD_EVENT_KICKED    GuildEventKind = 1
+	GuildEventKind_GUILD_EVENT_DISBANDED GuildEventKind = 2
+	GuildEventKind_GUILD_EVENT_TRANSFER  GuildEventKind = 3
+	GuildEventKind_GUILD_EVENT_POSITION  GuildEventKind = 4
+)
+
+var GuildEventKind_name = map[int32]string{
+	0: "GUILD_EVENT_NONE",
+	1: "GUILD_EVENT_KICKED",
+	2: "GUILD_EVENT_DISBANDED",
+	3: "GUILD_EVENT_TRANSFER",
+	4: "GUILD_EVENT_POSITION",
+}
+
+var GuildEventKind_value = map[string]int32{
+	"GUILD_EVENT_NONE":      0,
+	"GUILD_EVENT_KICKED":    1,
+	"GUILD_EVENT_DISBANDED": 2,
+	"GUILD_EVENT_TRANSFER":  3,
+	"GUILD_EVENT_POSITION":  4,
+}
+
+func (x GuildEventKind) String() string {
+	return proto.EnumName(GuildEventKind_name, int32(x))
+}
+
+func (GuildEventKind) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{2}
+}
+
 // 客户端心跳/回环测试
 type PingReq struct {
 	Timestamp int64 `protobuf:"varint,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
@@ -802,7 +895,1792 @@ func (m *BroadcastAck) GetCount() int32 {
 	return 0
 }
 
+type GuildInfo struct {
+	GuildId      int64         `protobuf:"varint,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
+	Name         string        `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	LeaderRoleId int64         `protobuf:"varint,3,opt,name=leader_role_id,json=leaderRoleId,proto3" json:"leader_role_id,omitempty"`
+	Notice       string        `protobuf:"bytes,4,opt,name=notice,proto3" json:"notice,omitempty"`
+	Level        int32         `protobuf:"varint,5,opt,name=level,proto3" json:"level,omitempty"`
+	MemberCount  int32         `protobuf:"varint,6,opt,name=member_count,json=memberCount,proto3" json:"member_count,omitempty"`
+	JoinMode     GuildJoinMode `protobuf:"varint,7,opt,name=join_mode,json=joinMode,proto3,enum=gate.GuildJoinMode" json:"join_mode,omitempty"`
+}
+
+func (m *GuildInfo) Reset()         { *m = GuildInfo{} }
+func (m *GuildInfo) String() string { return proto.CompactTextString(m) }
+func (*GuildInfo) ProtoMessage()    {}
+func (*GuildInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{15}
+}
+func (m *GuildInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GuildInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GuildInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GuildInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GuildInfo.Merge(m, src)
+}
+func (m *GuildInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *GuildInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_GuildInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GuildInfo proto.InternalMessageInfo
+
+func (m *GuildInfo) GetGuildId() int64 {
+	if m != nil {
+		return m.GuildId
+	}
+	return 0
+}
+
+func (m *GuildInfo) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *GuildInfo) GetLeaderRoleId() int64 {
+	if m != nil {
+		return m.LeaderRoleId
+	}
+	return 0
+}
+
+func (m *GuildInfo) GetNotice() string {
+	if m != nil {
+		return m.Notice
+	}
+	return ""
+}
+
+func (m *GuildInfo) GetLevel() int32 {
+	if m != nil {
+		return m.Level
+	}
+	return 0
+}
+
+func (m *GuildInfo) GetMemberCount() int32 {
+	if m != nil {
+		return m.MemberCount
+	}
+	return 0
+}
+
+func (m *GuildInfo) GetJoinMode() GuildJoinMode {
+	if m != nil {
+		return m.JoinMode
+	}
+	return GuildJoinMode_GUILD_JOIN_OPEN
+}
+
+type GuildMemberInfo struct {
+	RoleId   int64         `protobuf:"varint,1,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	Name     string        `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Level    int32         `protobuf:"varint,3,opt,name=level,proto3" json:"level,omitempty"`
+	Position GuildPosition `protobuf:"varint,4,opt,name=position,proto3,enum=gate.GuildPosition" json:"position,omitempty"`
+	JoinedAt int64         `protobuf:"varint,5,opt,name=joined_at,json=joinedAt,proto3" json:"joined_at,omitempty"`
+}
+
+func (m *GuildMemberInfo) Reset()         { *m = GuildMemberInfo{} }
+func (m *GuildMemberInfo) String() string { return proto.CompactTextString(m) }
+func (*GuildMemberInfo) ProtoMessage()    {}
+func (*GuildMemberInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{16}
+}
+func (m *GuildMemberInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GuildMemberInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GuildMemberInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GuildMemberInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GuildMemberInfo.Merge(m, src)
+}
+func (m *GuildMemberInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *GuildMemberInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_GuildMemberInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GuildMemberInfo proto.InternalMessageInfo
+
+func (m *GuildMemberInfo) GetRoleId() int64 {
+	if m != nil {
+		return m.RoleId
+	}
+	return 0
+}
+
+func (m *GuildMemberInfo) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *GuildMemberInfo) GetLevel() int32 {
+	if m != nil {
+		return m.Level
+	}
+	return 0
+}
+
+func (m *GuildMemberInfo) GetPosition() GuildPosition {
+	if m != nil {
+		return m.Position
+	}
+	return GuildPosition_GUILD_POSITION_NONE
+}
+
+func (m *GuildMemberInfo) GetJoinedAt() int64 {
+	if m != nil {
+		return m.JoinedAt
+	}
+	return 0
+}
+
+type GuildInviteInfo struct {
+	GuildId       int64  `protobuf:"varint,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
+	GuildName     string `protobuf:"bytes,2,opt,name=guild_name,json=guildName,proto3" json:"guild_name,omitempty"`
+	InvitedBy     int64  `protobuf:"varint,3,opt,name=invited_by,json=invitedBy,proto3" json:"invited_by,omitempty"`
+	InvitedByName string `protobuf:"bytes,4,opt,name=invited_by_name,json=invitedByName,proto3" json:"invited_by_name,omitempty"`
+	CreatedAt     int64  `protobuf:"varint,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+}
+
+func (m *GuildInviteInfo) Reset()         { *m = GuildInviteInfo{} }
+func (m *GuildInviteInfo) String() string { return proto.CompactTextString(m) }
+func (*GuildInviteInfo) ProtoMessage()    {}
+func (*GuildInviteInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{17}
+}
+func (m *GuildInviteInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GuildInviteInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GuildInviteInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GuildInviteInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GuildInviteInfo.Merge(m, src)
+}
+func (m *GuildInviteInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *GuildInviteInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_GuildInviteInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GuildInviteInfo proto.InternalMessageInfo
+
+func (m *GuildInviteInfo) GetGuildId() int64 {
+	if m != nil {
+		return m.GuildId
+	}
+	return 0
+}
+
+func (m *GuildInviteInfo) GetGuildName() string {
+	if m != nil {
+		return m.GuildName
+	}
+	return ""
+}
+
+func (m *GuildInviteInfo) GetInvitedBy() int64 {
+	if m != nil {
+		return m.InvitedBy
+	}
+	return 0
+}
+
+func (m *GuildInviteInfo) GetInvitedByName() string {
+	if m != nil {
+		return m.InvitedByName
+	}
+	return ""
+}
+
+func (m *GuildInviteInfo) GetCreatedAt() int64 {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return 0
+}
+
+type CreateGuildReq struct {
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (m *CreateGuildReq) Reset()         { *m = CreateGuildReq{} }
+func (m *CreateGuildReq) String() string { return proto.CompactTextString(m) }
+func (*CreateGuildReq) ProtoMessage()    {}
+func (*CreateGuildReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{18}
+}
+func (m *CreateGuildReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CreateGuildReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CreateGuildReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CreateGuildReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateGuildReq.Merge(m, src)
+}
+func (m *CreateGuildReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *CreateGuildReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateGuildReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateGuildReq proto.InternalMessageInfo
+
+func (m *CreateGuildReq) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type CreateGuildAck struct {
+	Code   int32      `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string     `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+	Guild  *GuildInfo `protobuf:"bytes,3,opt,name=guild,proto3" json:"guild,omitempty"`
+}
+
+func (m *CreateGuildAck) Reset()         { *m = CreateGuildAck{} }
+func (m *CreateGuildAck) String() string { return proto.CompactTextString(m) }
+func (*CreateGuildAck) ProtoMessage()    {}
+func (*CreateGuildAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{19}
+}
+func (m *CreateGuildAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CreateGuildAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CreateGuildAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CreateGuildAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateGuildAck.Merge(m, src)
+}
+func (m *CreateGuildAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *CreateGuildAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateGuildAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateGuildAck proto.InternalMessageInfo
+
+func (m *CreateGuildAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *CreateGuildAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+func (m *CreateGuildAck) GetGuild() *GuildInfo {
+	if m != nil {
+		return m.Guild
+	}
+	return nil
+}
+
+type JoinGuildReq struct {
+	GuildId int64 `protobuf:"varint,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
+}
+
+func (m *JoinGuildReq) Reset()         { *m = JoinGuildReq{} }
+func (m *JoinGuildReq) String() string { return proto.CompactTextString(m) }
+func (*JoinGuildReq) ProtoMessage()    {}
+func (*JoinGuildReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{20}
+}
+func (m *JoinGuildReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *JoinGuildReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_JoinGuildReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *JoinGuildReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_JoinGuildReq.Merge(m, src)
+}
+func (m *JoinGuildReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *JoinGuildReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_JoinGuildReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_JoinGuildReq proto.InternalMessageInfo
+
+func (m *JoinGuildReq) GetGuildId() int64 {
+	if m != nil {
+		return m.GuildId
+	}
+	return 0
+}
+
+type JoinGuildAck struct {
+	Code   int32      `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string     `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+	Guild  *GuildInfo `protobuf:"bytes,3,opt,name=guild,proto3" json:"guild,omitempty"`
+}
+
+func (m *JoinGuildAck) Reset()         { *m = JoinGuildAck{} }
+func (m *JoinGuildAck) String() string { return proto.CompactTextString(m) }
+func (*JoinGuildAck) ProtoMessage()    {}
+func (*JoinGuildAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{21}
+}
+func (m *JoinGuildAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *JoinGuildAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_JoinGuildAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *JoinGuildAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_JoinGuildAck.Merge(m, src)
+}
+func (m *JoinGuildAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *JoinGuildAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_JoinGuildAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_JoinGuildAck proto.InternalMessageInfo
+
+func (m *JoinGuildAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *JoinGuildAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+func (m *JoinGuildAck) GetGuild() *GuildInfo {
+	if m != nil {
+		return m.Guild
+	}
+	return nil
+}
+
+type LeaveGuildReq struct {
+}
+
+func (m *LeaveGuildReq) Reset()         { *m = LeaveGuildReq{} }
+func (m *LeaveGuildReq) String() string { return proto.CompactTextString(m) }
+func (*LeaveGuildReq) ProtoMessage()    {}
+func (*LeaveGuildReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{22}
+}
+func (m *LeaveGuildReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *LeaveGuildReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LeaveGuildReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *LeaveGuildReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LeaveGuildReq.Merge(m, src)
+}
+func (m *LeaveGuildReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *LeaveGuildReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_LeaveGuildReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LeaveGuildReq proto.InternalMessageInfo
+
+type LeaveGuildAck struct {
+	Code   int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+}
+
+func (m *LeaveGuildAck) Reset()         { *m = LeaveGuildAck{} }
+func (m *LeaveGuildAck) String() string { return proto.CompactTextString(m) }
+func (*LeaveGuildAck) ProtoMessage()    {}
+func (*LeaveGuildAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{23}
+}
+func (m *LeaveGuildAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *LeaveGuildAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LeaveGuildAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *LeaveGuildAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LeaveGuildAck.Merge(m, src)
+}
+func (m *LeaveGuildAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *LeaveGuildAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_LeaveGuildAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LeaveGuildAck proto.InternalMessageInfo
+
+func (m *LeaveGuildAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *LeaveGuildAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+type KickGuildMemberReq struct {
+	RoleId int64 `protobuf:"varint,1,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+}
+
+func (m *KickGuildMemberReq) Reset()         { *m = KickGuildMemberReq{} }
+func (m *KickGuildMemberReq) String() string { return proto.CompactTextString(m) }
+func (*KickGuildMemberReq) ProtoMessage()    {}
+func (*KickGuildMemberReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{24}
+}
+func (m *KickGuildMemberReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *KickGuildMemberReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_KickGuildMemberReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *KickGuildMemberReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_KickGuildMemberReq.Merge(m, src)
+}
+func (m *KickGuildMemberReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *KickGuildMemberReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_KickGuildMemberReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_KickGuildMemberReq proto.InternalMessageInfo
+
+func (m *KickGuildMemberReq) GetRoleId() int64 {
+	if m != nil {
+		return m.RoleId
+	}
+	return 0
+}
+
+type KickGuildMemberAck struct {
+	Code   int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+}
+
+func (m *KickGuildMemberAck) Reset()         { *m = KickGuildMemberAck{} }
+func (m *KickGuildMemberAck) String() string { return proto.CompactTextString(m) }
+func (*KickGuildMemberAck) ProtoMessage()    {}
+func (*KickGuildMemberAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{25}
+}
+func (m *KickGuildMemberAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *KickGuildMemberAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_KickGuildMemberAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *KickGuildMemberAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_KickGuildMemberAck.Merge(m, src)
+}
+func (m *KickGuildMemberAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *KickGuildMemberAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_KickGuildMemberAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_KickGuildMemberAck proto.InternalMessageInfo
+
+func (m *KickGuildMemberAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *KickGuildMemberAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+type TransferLeaderReq struct {
+	RoleId int64 `protobuf:"varint,1,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+}
+
+func (m *TransferLeaderReq) Reset()         { *m = TransferLeaderReq{} }
+func (m *TransferLeaderReq) String() string { return proto.CompactTextString(m) }
+func (*TransferLeaderReq) ProtoMessage()    {}
+func (*TransferLeaderReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{26}
+}
+func (m *TransferLeaderReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TransferLeaderReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TransferLeaderReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TransferLeaderReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TransferLeaderReq.Merge(m, src)
+}
+func (m *TransferLeaderReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *TransferLeaderReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_TransferLeaderReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TransferLeaderReq proto.InternalMessageInfo
+
+func (m *TransferLeaderReq) GetRoleId() int64 {
+	if m != nil {
+		return m.RoleId
+	}
+	return 0
+}
+
+type TransferLeaderAck struct {
+	Code   int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+}
+
+func (m *TransferLeaderAck) Reset()         { *m = TransferLeaderAck{} }
+func (m *TransferLeaderAck) String() string { return proto.CompactTextString(m) }
+func (*TransferLeaderAck) ProtoMessage()    {}
+func (*TransferLeaderAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{27}
+}
+func (m *TransferLeaderAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TransferLeaderAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TransferLeaderAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TransferLeaderAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TransferLeaderAck.Merge(m, src)
+}
+func (m *TransferLeaderAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *TransferLeaderAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_TransferLeaderAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TransferLeaderAck proto.InternalMessageInfo
+
+func (m *TransferLeaderAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *TransferLeaderAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+type SetGuildNoticeReq struct {
+	Notice string `protobuf:"bytes,1,opt,name=notice,proto3" json:"notice,omitempty"`
+}
+
+func (m *SetGuildNoticeReq) Reset()         { *m = SetGuildNoticeReq{} }
+func (m *SetGuildNoticeReq) String() string { return proto.CompactTextString(m) }
+func (*SetGuildNoticeReq) ProtoMessage()    {}
+func (*SetGuildNoticeReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{28}
+}
+func (m *SetGuildNoticeReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SetGuildNoticeReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SetGuildNoticeReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SetGuildNoticeReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetGuildNoticeReq.Merge(m, src)
+}
+func (m *SetGuildNoticeReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *SetGuildNoticeReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetGuildNoticeReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetGuildNoticeReq proto.InternalMessageInfo
+
+func (m *SetGuildNoticeReq) GetNotice() string {
+	if m != nil {
+		return m.Notice
+	}
+	return ""
+}
+
+type SetGuildNoticeAck struct {
+	Code   int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+}
+
+func (m *SetGuildNoticeAck) Reset()         { *m = SetGuildNoticeAck{} }
+func (m *SetGuildNoticeAck) String() string { return proto.CompactTextString(m) }
+func (*SetGuildNoticeAck) ProtoMessage()    {}
+func (*SetGuildNoticeAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{29}
+}
+func (m *SetGuildNoticeAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SetGuildNoticeAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SetGuildNoticeAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SetGuildNoticeAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetGuildNoticeAck.Merge(m, src)
+}
+func (m *SetGuildNoticeAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *SetGuildNoticeAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetGuildNoticeAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetGuildNoticeAck proto.InternalMessageInfo
+
+func (m *SetGuildNoticeAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *SetGuildNoticeAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+type SetJoinModeReq struct {
+	Mode GuildJoinMode `protobuf:"varint,1,opt,name=mode,proto3,enum=gate.GuildJoinMode" json:"mode,omitempty"`
+}
+
+func (m *SetJoinModeReq) Reset()         { *m = SetJoinModeReq{} }
+func (m *SetJoinModeReq) String() string { return proto.CompactTextString(m) }
+func (*SetJoinModeReq) ProtoMessage()    {}
+func (*SetJoinModeReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{30}
+}
+func (m *SetJoinModeReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SetJoinModeReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SetJoinModeReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SetJoinModeReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetJoinModeReq.Merge(m, src)
+}
+func (m *SetJoinModeReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *SetJoinModeReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetJoinModeReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetJoinModeReq proto.InternalMessageInfo
+
+func (m *SetJoinModeReq) GetMode() GuildJoinMode {
+	if m != nil {
+		return m.Mode
+	}
+	return GuildJoinMode_GUILD_JOIN_OPEN
+}
+
+type SetJoinModeAck struct {
+	Code   int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+}
+
+func (m *SetJoinModeAck) Reset()         { *m = SetJoinModeAck{} }
+func (m *SetJoinModeAck) String() string { return proto.CompactTextString(m) }
+func (*SetJoinModeAck) ProtoMessage()    {}
+func (*SetJoinModeAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{31}
+}
+func (m *SetJoinModeAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SetJoinModeAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SetJoinModeAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SetJoinModeAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetJoinModeAck.Merge(m, src)
+}
+func (m *SetJoinModeAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *SetJoinModeAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetJoinModeAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetJoinModeAck proto.InternalMessageInfo
+
+func (m *SetJoinModeAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *SetJoinModeAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+type SetMemberPositionReq struct {
+	RoleId   int64         `protobuf:"varint,1,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	Position GuildPosition `protobuf:"varint,2,opt,name=position,proto3,enum=gate.GuildPosition" json:"position,omitempty"`
+}
+
+func (m *SetMemberPositionReq) Reset()         { *m = SetMemberPositionReq{} }
+func (m *SetMemberPositionReq) String() string { return proto.CompactTextString(m) }
+func (*SetMemberPositionReq) ProtoMessage()    {}
+func (*SetMemberPositionReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{32}
+}
+func (m *SetMemberPositionReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SetMemberPositionReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SetMemberPositionReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SetMemberPositionReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetMemberPositionReq.Merge(m, src)
+}
+func (m *SetMemberPositionReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *SetMemberPositionReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetMemberPositionReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetMemberPositionReq proto.InternalMessageInfo
+
+func (m *SetMemberPositionReq) GetRoleId() int64 {
+	if m != nil {
+		return m.RoleId
+	}
+	return 0
+}
+
+func (m *SetMemberPositionReq) GetPosition() GuildPosition {
+	if m != nil {
+		return m.Position
+	}
+	return GuildPosition_GUILD_POSITION_NONE
+}
+
+type SetMemberPositionAck struct {
+	Code   int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+}
+
+func (m *SetMemberPositionAck) Reset()         { *m = SetMemberPositionAck{} }
+func (m *SetMemberPositionAck) String() string { return proto.CompactTextString(m) }
+func (*SetMemberPositionAck) ProtoMessage()    {}
+func (*SetMemberPositionAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{33}
+}
+func (m *SetMemberPositionAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SetMemberPositionAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SetMemberPositionAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SetMemberPositionAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetMemberPositionAck.Merge(m, src)
+}
+func (m *SetMemberPositionAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *SetMemberPositionAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetMemberPositionAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetMemberPositionAck proto.InternalMessageInfo
+
+func (m *SetMemberPositionAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *SetMemberPositionAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+type DisbandGuildReq struct {
+}
+
+func (m *DisbandGuildReq) Reset()         { *m = DisbandGuildReq{} }
+func (m *DisbandGuildReq) String() string { return proto.CompactTextString(m) }
+func (*DisbandGuildReq) ProtoMessage()    {}
+func (*DisbandGuildReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{34}
+}
+func (m *DisbandGuildReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DisbandGuildReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DisbandGuildReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DisbandGuildReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DisbandGuildReq.Merge(m, src)
+}
+func (m *DisbandGuildReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *DisbandGuildReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_DisbandGuildReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DisbandGuildReq proto.InternalMessageInfo
+
+type DisbandGuildAck struct {
+	Code   int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+}
+
+func (m *DisbandGuildAck) Reset()         { *m = DisbandGuildAck{} }
+func (m *DisbandGuildAck) String() string { return proto.CompactTextString(m) }
+func (*DisbandGuildAck) ProtoMessage()    {}
+func (*DisbandGuildAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{35}
+}
+func (m *DisbandGuildAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DisbandGuildAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DisbandGuildAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DisbandGuildAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DisbandGuildAck.Merge(m, src)
+}
+func (m *DisbandGuildAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *DisbandGuildAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_DisbandGuildAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DisbandGuildAck proto.InternalMessageInfo
+
+func (m *DisbandGuildAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *DisbandGuildAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+type GetGuildInfoReq struct {
+	GuildId int64 `protobuf:"varint,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
+}
+
+func (m *GetGuildInfoReq) Reset()         { *m = GetGuildInfoReq{} }
+func (m *GetGuildInfoReq) String() string { return proto.CompactTextString(m) }
+func (*GetGuildInfoReq) ProtoMessage()    {}
+func (*GetGuildInfoReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{36}
+}
+func (m *GetGuildInfoReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetGuildInfoReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetGuildInfoReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetGuildInfoReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetGuildInfoReq.Merge(m, src)
+}
+func (m *GetGuildInfoReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetGuildInfoReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetGuildInfoReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetGuildInfoReq proto.InternalMessageInfo
+
+func (m *GetGuildInfoReq) GetGuildId() int64 {
+	if m != nil {
+		return m.GuildId
+	}
+	return 0
+}
+
+type GetGuildInfoAck struct {
+	Code    int32              `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason  string             `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+	Guild   *GuildInfo         `protobuf:"bytes,3,opt,name=guild,proto3" json:"guild,omitempty"`
+	Members []*GuildMemberInfo `protobuf:"bytes,4,rep,name=members,proto3" json:"members,omitempty"`
+}
+
+func (m *GetGuildInfoAck) Reset()         { *m = GetGuildInfoAck{} }
+func (m *GetGuildInfoAck) String() string { return proto.CompactTextString(m) }
+func (*GetGuildInfoAck) ProtoMessage()    {}
+func (*GetGuildInfoAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{37}
+}
+func (m *GetGuildInfoAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetGuildInfoAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetGuildInfoAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetGuildInfoAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetGuildInfoAck.Merge(m, src)
+}
+func (m *GetGuildInfoAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetGuildInfoAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetGuildInfoAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetGuildInfoAck proto.InternalMessageInfo
+
+func (m *GetGuildInfoAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *GetGuildInfoAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+func (m *GetGuildInfoAck) GetGuild() *GuildInfo {
+	if m != nil {
+		return m.Guild
+	}
+	return nil
+}
+
+func (m *GetGuildInfoAck) GetMembers() []*GuildMemberInfo {
+	if m != nil {
+		return m.Members
+	}
+	return nil
+}
+
+type ListGuildsReq struct {
+}
+
+func (m *ListGuildsReq) Reset()         { *m = ListGuildsReq{} }
+func (m *ListGuildsReq) String() string { return proto.CompactTextString(m) }
+func (*ListGuildsReq) ProtoMessage()    {}
+func (*ListGuildsReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{38}
+}
+func (m *ListGuildsReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListGuildsReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListGuildsReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListGuildsReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListGuildsReq.Merge(m, src)
+}
+func (m *ListGuildsReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListGuildsReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListGuildsReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListGuildsReq proto.InternalMessageInfo
+
+type ListGuildsAck struct {
+	Code   int32        `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string       `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+	Guilds []*GuildInfo `protobuf:"bytes,3,rep,name=guilds,proto3" json:"guilds,omitempty"`
+}
+
+func (m *ListGuildsAck) Reset()         { *m = ListGuildsAck{} }
+func (m *ListGuildsAck) String() string { return proto.CompactTextString(m) }
+func (*ListGuildsAck) ProtoMessage()    {}
+func (*ListGuildsAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{39}
+}
+func (m *ListGuildsAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListGuildsAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListGuildsAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListGuildsAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListGuildsAck.Merge(m, src)
+}
+func (m *ListGuildsAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListGuildsAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListGuildsAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListGuildsAck proto.InternalMessageInfo
+
+func (m *ListGuildsAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *ListGuildsAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+func (m *ListGuildsAck) GetGuilds() []*GuildInfo {
+	if m != nil {
+		return m.Guilds
+	}
+	return nil
+}
+
+type InviteMemberReq struct {
+	RoleId int64  `protobuf:"varint,1,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	Name   string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (m *InviteMemberReq) Reset()         { *m = InviteMemberReq{} }
+func (m *InviteMemberReq) String() string { return proto.CompactTextString(m) }
+func (*InviteMemberReq) ProtoMessage()    {}
+func (*InviteMemberReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{40}
+}
+func (m *InviteMemberReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *InviteMemberReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_InviteMemberReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *InviteMemberReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InviteMemberReq.Merge(m, src)
+}
+func (m *InviteMemberReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *InviteMemberReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_InviteMemberReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InviteMemberReq proto.InternalMessageInfo
+
+func (m *InviteMemberReq) GetRoleId() int64 {
+	if m != nil {
+		return m.RoleId
+	}
+	return 0
+}
+
+func (m *InviteMemberReq) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type InviteMemberAck struct {
+	Code   int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+}
+
+func (m *InviteMemberAck) Reset()         { *m = InviteMemberAck{} }
+func (m *InviteMemberAck) String() string { return proto.CompactTextString(m) }
+func (*InviteMemberAck) ProtoMessage()    {}
+func (*InviteMemberAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{41}
+}
+func (m *InviteMemberAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *InviteMemberAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_InviteMemberAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *InviteMemberAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InviteMemberAck.Merge(m, src)
+}
+func (m *InviteMemberAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *InviteMemberAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_InviteMemberAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InviteMemberAck proto.InternalMessageInfo
+
+func (m *InviteMemberAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *InviteMemberAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+type ListInvitesReq struct {
+}
+
+func (m *ListInvitesReq) Reset()         { *m = ListInvitesReq{} }
+func (m *ListInvitesReq) String() string { return proto.CompactTextString(m) }
+func (*ListInvitesReq) ProtoMessage()    {}
+func (*ListInvitesReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{42}
+}
+func (m *ListInvitesReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListInvitesReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListInvitesReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListInvitesReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListInvitesReq.Merge(m, src)
+}
+func (m *ListInvitesReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListInvitesReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListInvitesReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListInvitesReq proto.InternalMessageInfo
+
+type ListInvitesAck struct {
+	Code    int32              `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason  string             `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+	Invites []*GuildInviteInfo `protobuf:"bytes,3,rep,name=invites,proto3" json:"invites,omitempty"`
+}
+
+func (m *ListInvitesAck) Reset()         { *m = ListInvitesAck{} }
+func (m *ListInvitesAck) String() string { return proto.CompactTextString(m) }
+func (*ListInvitesAck) ProtoMessage()    {}
+func (*ListInvitesAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{43}
+}
+func (m *ListInvitesAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListInvitesAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListInvitesAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListInvitesAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListInvitesAck.Merge(m, src)
+}
+func (m *ListInvitesAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListInvitesAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListInvitesAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListInvitesAck proto.InternalMessageInfo
+
+func (m *ListInvitesAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *ListInvitesAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+func (m *ListInvitesAck) GetInvites() []*GuildInviteInfo {
+	if m != nil {
+		return m.Invites
+	}
+	return nil
+}
+
+type RespondInviteReq struct {
+	GuildId int64 `protobuf:"varint,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
+	Accept  bool  `protobuf:"varint,2,opt,name=accept,proto3" json:"accept,omitempty"`
+}
+
+func (m *RespondInviteReq) Reset()         { *m = RespondInviteReq{} }
+func (m *RespondInviteReq) String() string { return proto.CompactTextString(m) }
+func (*RespondInviteReq) ProtoMessage()    {}
+func (*RespondInviteReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{44}
+}
+func (m *RespondInviteReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RespondInviteReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RespondInviteReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RespondInviteReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RespondInviteReq.Merge(m, src)
+}
+func (m *RespondInviteReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *RespondInviteReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_RespondInviteReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RespondInviteReq proto.InternalMessageInfo
+
+func (m *RespondInviteReq) GetGuildId() int64 {
+	if m != nil {
+		return m.GuildId
+	}
+	return 0
+}
+
+func (m *RespondInviteReq) GetAccept() bool {
+	if m != nil {
+		return m.Accept
+	}
+	return false
+}
+
+type RespondInviteAck struct {
+	Code   int32      `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Reason string     `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+	Guild  *GuildInfo `protobuf:"bytes,3,opt,name=guild,proto3" json:"guild,omitempty"`
+}
+
+func (m *RespondInviteAck) Reset()         { *m = RespondInviteAck{} }
+func (m *RespondInviteAck) String() string { return proto.CompactTextString(m) }
+func (*RespondInviteAck) ProtoMessage()    {}
+func (*RespondInviteAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{45}
+}
+func (m *RespondInviteAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RespondInviteAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RespondInviteAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RespondInviteAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RespondInviteAck.Merge(m, src)
+}
+func (m *RespondInviteAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *RespondInviteAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_RespondInviteAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RespondInviteAck proto.InternalMessageInfo
+
+func (m *RespondInviteAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *RespondInviteAck) GetReason() string {
+	if m != nil {
+		return m.Reason
+	}
+	return ""
+}
+
+func (m *RespondInviteAck) GetGuild() *GuildInfo {
+	if m != nil {
+		return m.Guild
+	}
+	return nil
+}
+
+// 邀请到达通知（推送给被邀请的在线角色）
+type GuildInviteNtf struct {
+	GuildId       int64  `protobuf:"varint,1,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
+	GuildName     string `protobuf:"bytes,2,opt,name=guild_name,json=guildName,proto3" json:"guild_name,omitempty"`
+	InvitedBy     int64  `protobuf:"varint,3,opt,name=invited_by,json=invitedBy,proto3" json:"invited_by,omitempty"`
+	InvitedByName string `protobuf:"bytes,4,opt,name=invited_by_name,json=invitedByName,proto3" json:"invited_by_name,omitempty"`
+}
+
+func (m *GuildInviteNtf) Reset()         { *m = GuildInviteNtf{} }
+func (m *GuildInviteNtf) String() string { return proto.CompactTextString(m) }
+func (*GuildInviteNtf) ProtoMessage()    {}
+func (*GuildInviteNtf) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{46}
+}
+func (m *GuildInviteNtf) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GuildInviteNtf) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GuildInviteNtf.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GuildInviteNtf) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GuildInviteNtf.Merge(m, src)
+}
+func (m *GuildInviteNtf) XXX_Size() int {
+	return m.Size()
+}
+func (m *GuildInviteNtf) XXX_DiscardUnknown() {
+	xxx_messageInfo_GuildInviteNtf.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GuildInviteNtf proto.InternalMessageInfo
+
+func (m *GuildInviteNtf) GetGuildId() int64 {
+	if m != nil {
+		return m.GuildId
+	}
+	return 0
+}
+
+func (m *GuildInviteNtf) GetGuildName() string {
+	if m != nil {
+		return m.GuildName
+	}
+	return ""
+}
+
+func (m *GuildInviteNtf) GetInvitedBy() int64 {
+	if m != nil {
+		return m.InvitedBy
+	}
+	return 0
+}
+
+func (m *GuildInviteNtf) GetInvitedByName() string {
+	if m != nil {
+		return m.InvitedByName
+	}
+	return ""
+}
+
+// 公会关键事件通知（被踢/解散/转让/职位变更）
+type GuildEventNtf struct {
+	Kind           GuildEventKind `protobuf:"varint,1,opt,name=kind,proto3,enum=gate.GuildEventKind" json:"kind,omitempty"`
+	GuildId        int64          `protobuf:"varint,2,opt,name=guild_id,json=guildId,proto3" json:"guild_id,omitempty"`
+	GuildName      string         `protobuf:"bytes,3,opt,name=guild_name,json=guildName,proto3" json:"guild_name,omitempty"`
+	Position       GuildPosition  `protobuf:"varint,4,opt,name=position,proto3,enum=gate.GuildPosition" json:"position,omitempty"`
+	OperatorRoleId int64          `protobuf:"varint,5,opt,name=operator_role_id,json=operatorRoleId,proto3" json:"operator_role_id,omitempty"`
+}
+
+func (m *GuildEventNtf) Reset()         { *m = GuildEventNtf{} }
+func (m *GuildEventNtf) String() string { return proto.CompactTextString(m) }
+func (*GuildEventNtf) ProtoMessage()    {}
+func (*GuildEventNtf) Descriptor() ([]byte, []int) {
+	return fileDescriptor_743bb58a714d8b7d, []int{47}
+}
+func (m *GuildEventNtf) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GuildEventNtf) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GuildEventNtf.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GuildEventNtf) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GuildEventNtf.Merge(m, src)
+}
+func (m *GuildEventNtf) XXX_Size() int {
+	return m.Size()
+}
+func (m *GuildEventNtf) XXX_DiscardUnknown() {
+	xxx_messageInfo_GuildEventNtf.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GuildEventNtf proto.InternalMessageInfo
+
+func (m *GuildEventNtf) GetKind() GuildEventKind {
+	if m != nil {
+		return m.Kind
+	}
+	return GuildEventKind_GUILD_EVENT_NONE
+}
+
+func (m *GuildEventNtf) GetGuildId() int64 {
+	if m != nil {
+		return m.GuildId
+	}
+	return 0
+}
+
+func (m *GuildEventNtf) GetGuildName() string {
+	if m != nil {
+		return m.GuildName
+	}
+	return ""
+}
+
+func (m *GuildEventNtf) GetPosition() GuildPosition {
+	if m != nil {
+		return m.Position
+	}
+	return GuildPosition_GUILD_POSITION_NONE
+}
+
+func (m *GuildEventNtf) GetOperatorRoleId() int64 {
+	if m != nil {
+		return m.OperatorRoleId
+	}
+	return 0
+}
+
 func init() {
+	proto.RegisterEnum("gate.GuildPosition", GuildPosition_name, GuildPosition_value)
+	proto.RegisterEnum("gate.GuildJoinMode", GuildJoinMode_name, GuildJoinMode_value)
+	proto.RegisterEnum("gate.GuildEventKind", GuildEventKind_name, GuildEventKind_value)
 	proto.RegisterType((*PingReq)(nil), "gate.PingReq")
 	proto.RegisterType((*PingAck)(nil), "gate.PingAck")
 	proto.RegisterType((*RoleInfo)(nil), "gate.RoleInfo")
@@ -818,43 +2696,125 @@ func init() {
 	proto.RegisterType((*NotifyNtf)(nil), "gate.NotifyNtf")
 	proto.RegisterType((*BroadcastReq)(nil), "gate.BroadcastReq")
 	proto.RegisterType((*BroadcastAck)(nil), "gate.BroadcastAck")
+	proto.RegisterType((*GuildInfo)(nil), "gate.GuildInfo")
+	proto.RegisterType((*GuildMemberInfo)(nil), "gate.GuildMemberInfo")
+	proto.RegisterType((*GuildInviteInfo)(nil), "gate.GuildInviteInfo")
+	proto.RegisterType((*CreateGuildReq)(nil), "gate.CreateGuildReq")
+	proto.RegisterType((*CreateGuildAck)(nil), "gate.CreateGuildAck")
+	proto.RegisterType((*JoinGuildReq)(nil), "gate.JoinGuildReq")
+	proto.RegisterType((*JoinGuildAck)(nil), "gate.JoinGuildAck")
+	proto.RegisterType((*LeaveGuildReq)(nil), "gate.LeaveGuildReq")
+	proto.RegisterType((*LeaveGuildAck)(nil), "gate.LeaveGuildAck")
+	proto.RegisterType((*KickGuildMemberReq)(nil), "gate.KickGuildMemberReq")
+	proto.RegisterType((*KickGuildMemberAck)(nil), "gate.KickGuildMemberAck")
+	proto.RegisterType((*TransferLeaderReq)(nil), "gate.TransferLeaderReq")
+	proto.RegisterType((*TransferLeaderAck)(nil), "gate.TransferLeaderAck")
+	proto.RegisterType((*SetGuildNoticeReq)(nil), "gate.SetGuildNoticeReq")
+	proto.RegisterType((*SetGuildNoticeAck)(nil), "gate.SetGuildNoticeAck")
+	proto.RegisterType((*SetJoinModeReq)(nil), "gate.SetJoinModeReq")
+	proto.RegisterType((*SetJoinModeAck)(nil), "gate.SetJoinModeAck")
+	proto.RegisterType((*SetMemberPositionReq)(nil), "gate.SetMemberPositionReq")
+	proto.RegisterType((*SetMemberPositionAck)(nil), "gate.SetMemberPositionAck")
+	proto.RegisterType((*DisbandGuildReq)(nil), "gate.DisbandGuildReq")
+	proto.RegisterType((*DisbandGuildAck)(nil), "gate.DisbandGuildAck")
+	proto.RegisterType((*GetGuildInfoReq)(nil), "gate.GetGuildInfoReq")
+	proto.RegisterType((*GetGuildInfoAck)(nil), "gate.GetGuildInfoAck")
+	proto.RegisterType((*ListGuildsReq)(nil), "gate.ListGuildsReq")
+	proto.RegisterType((*ListGuildsAck)(nil), "gate.ListGuildsAck")
+	proto.RegisterType((*InviteMemberReq)(nil), "gate.InviteMemberReq")
+	proto.RegisterType((*InviteMemberAck)(nil), "gate.InviteMemberAck")
+	proto.RegisterType((*ListInvitesReq)(nil), "gate.ListInvitesReq")
+	proto.RegisterType((*ListInvitesAck)(nil), "gate.ListInvitesAck")
+	proto.RegisterType((*RespondInviteReq)(nil), "gate.RespondInviteReq")
+	proto.RegisterType((*RespondInviteAck)(nil), "gate.RespondInviteAck")
+	proto.RegisterType((*GuildInviteNtf)(nil), "gate.GuildInviteNtf")
+	proto.RegisterType((*GuildEventNtf)(nil), "gate.GuildEventNtf")
 }
 
 func init() { proto.RegisterFile("gate.proto", fileDescriptor_743bb58a714d8b7d) }
 
 var fileDescriptor_743bb58a714d8b7d = []byte{
-	// 488 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x53, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0x8d, 0x6b, 0x3b, 0xae, 0xa7, 0x05, 0xa1, 0x55, 0x05, 0x3e, 0x80, 0x15, 0x96, 0x56, 0xcd,
-	0x29, 0x91, 0xe0, 0xc0, 0x01, 0x24, 0x44, 0x11, 0xa0, 0x88, 0x52, 0xa1, 0x3d, 0x72, 0xa0, 0xda,
-	0xda, 0x13, 0xc7, 0x4a, 0xbc, 0xdb, 0x7a, 0xd7, 0x95, 0xe0, 0x2b, 0xf8, 0x2c, 0x8e, 0x3d, 0x72,
-	0x44, 0xc9, 0x8f, 0xa0, 0x5d, 0xdb, 0xd8, 0x15, 0x02, 0xa9, 0x87, 0xde, 0xe6, 0x79, 0x67, 0xde,
-	0xbc, 0xf7, 0x76, 0x0d, 0x90, 0x71, 0x8d, 0x93, 0xf3, 0x52, 0x6a, 0x49, 0x3c, 0x53, 0xd3, 0x43,
-	0x08, 0x3e, 0xe5, 0x22, 0x63, 0x78, 0x41, 0x1e, 0x42, 0xa8, 0xf3, 0x02, 0x95, 0xe6, 0xc5, 0x79,
-	0xe4, 0x8c, 0x9c, 0xb1, 0xcb, 0xba, 0x0f, 0xf4, 0x5d, 0xdd, 0xf8, 0x3a, 0x59, 0xfe, 0xbf, 0x91,
-	0x3c, 0x02, 0x50, 0xa8, 0x54, 0x2e, 0xc5, 0x69, 0x9e, 0x46, 0x5b, 0xf5, 0x71, 0xf3, 0x65, 0x96,
-	0xd2, 0x8f, 0xb0, 0xcd, 0xe4, 0x0a, 0x67, 0x62, 0x2e, 0xc9, 0x03, 0x08, 0x4a, 0xb9, 0x42, 0xd3,
-	0x57, 0xd3, 0x0c, 0x0d, 0x9c, 0xa5, 0x84, 0x80, 0x27, 0x78, 0x81, 0x76, 0x3a, 0x64, 0xb6, 0x26,
-	0x7b, 0xe0, 0xaf, 0xf0, 0x12, 0x57, 0x91, 0x3b, 0x72, 0xc6, 0x3e, 0xab, 0x01, 0x9d, 0xc3, 0xf6,
-	0xb1, 0xcc, 0x72, 0x61, 0x0c, 0x44, 0x10, 0xf0, 0x24, 0x91, 0x95, 0xd0, 0x96, 0x2e, 0x64, 0x2d,
-	0x24, 0xf7, 0xc0, 0xad, 0xfe, 0x88, 0x31, 0xa5, 0x61, 0xd3, 0x72, 0x89, 0xc2, 0xb2, 0x85, 0xac,
-	0x06, 0x86, 0xe1, 0x12, 0x4b, 0xa3, 0x34, 0xf2, 0x6a, 0x86, 0x06, 0x52, 0xd1, 0xec, 0x31, 0xfe,
-	0x09, 0x78, 0x89, 0x4c, 0xd1, 0x2e, 0xf1, 0x99, 0xad, 0xc9, 0x7d, 0x18, 0x96, 0xc8, 0x95, 0x14,
-	0x8d, 0xe6, 0x06, 0xb5, 0x9b, 0xdd, 0x6e, 0xf3, 0x3e, 0xf8, 0xc6, 0xa5, 0x8a, 0xbc, 0x91, 0x3b,
-	0xde, 0x79, 0x7a, 0x77, 0x62, 0xef, 0xa4, 0xcd, 0x84, 0xd5, 0x87, 0x74, 0x07, 0xc2, 0x63, 0x99,
-	0xc9, 0x4a, 0x33, 0xbc, 0xa0, 0xcf, 0x5b, 0x70, 0xc3, 0xed, 0xf4, 0x09, 0xdc, 0x79, 0x53, 0x22,
-	0xd7, 0x68, 0xe8, 0x4d, 0x44, 0x6d, 0xb0, 0x4e, 0x17, 0x2c, 0x3d, 0xed, 0x37, 0xdd, 0xd4, 0x1f,
-	0x05, 0xcf, 0x08, 0xb6, 0x06, 0xff, 0x36, 0x63, 0xcf, 0xe8, 0x21, 0xec, 0xbe, 0x15, 0x1a, 0xcb,
-	0xf7, 0xbc, 0xb0, 0x22, 0xfe, 0x75, 0xed, 0xf4, 0x4b, 0xaf, 0xf1, 0x36, 0x84, 0x3c, 0x86, 0xe0,
-	0x43, 0x9e, 0x2c, 0x4f, 0xf4, 0xbc, 0x47, 0xe3, 0x5c, 0x4b, 0xec, 0x00, 0xc2, 0x13, 0xa9, 0xf3,
-	0xf9, 0x57, 0xd3, 0x14, 0x41, 0x90, 0x48, 0xa1, 0xb1, 0x7b, 0x50, 0x0d, 0xa4, 0x2f, 0x61, 0xf7,
-	0xa8, 0x94, 0x3c, 0x4d, 0xb8, 0xd2, 0x4d, 0xae, 0x55, 0x9e, 0xaa, 0xc8, 0x19, 0xb9, 0x63, 0x97,
-	0xd9, 0xba, 0x3f, 0xbd, 0x75, 0x7d, 0x7a, 0xbf, 0x37, 0x6d, 0x7c, 0xee, 0x81, 0xdf, 0x3d, 0x5b,
-	0x9f, 0xd5, 0xe0, 0xe8, 0xd5, 0x8f, 0x75, 0xec, 0x5c, 0xad, 0x63, 0xe7, 0xd7, 0x3a, 0x76, 0xbe,
-	0x6f, 0xe2, 0xc1, 0xd5, 0x26, 0x1e, 0xfc, 0xdc, 0xc4, 0x83, 0xcf, 0x07, 0x59, 0xae, 0x17, 0xd5,
-	0xd9, 0x24, 0x91, 0xc5, 0xf4, 0xdb, 0x02, 0xc5, 0xa2, 0xe2, 0xaa, 0x9a, 0x16, 0x19, 0x2f, 0x70,
-	0x6a, 0x7f, 0xee, 0x17, 0xc6, 0xfd, 0xd9, 0xd0, 0xd6, 0xcf, 0x7e, 0x07, 0x00, 0x00, 0xff, 0xff,
-	0xc5, 0x52, 0xf3, 0x36, 0xf6, 0x03, 0x00, 0x00,
+	// 1265 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x57, 0xdd, 0x72, 0xdb, 0x44,
+	0x14, 0x8e, 0x62, 0x3b, 0x8e, 0x4f, 0x13, 0x5b, 0xdd, 0xa6, 0xa9, 0x0b, 0xd4, 0x93, 0x2e, 0x2d,
+	0x31, 0x05, 0x6a, 0xa6, 0x5c, 0x30, 0x4c, 0x0b, 0xad, 0x1d, 0xab, 0x19, 0x35, 0x8e, 0x9c, 0x91,
+	0x43, 0x67, 0xe0, 0x02, 0xa3, 0x48, 0x1b, 0x57, 0x8d, 0xa5, 0x75, 0xa5, 0x75, 0x98, 0xf2, 0x0e,
+	0xcc, 0xc0, 0x05, 0x2f, 0xc0, 0x1b, 0xf0, 0x16, 0x5c, 0x31, 0xbd, 0xe4, 0x92, 0x69, 0x5e, 0x84,
+	0xd9, 0x5d, 0xc9, 0x92, 0xd2, 0xc4, 0x45, 0x33, 0x64, 0xb8, 0xd3, 0xf9, 0xd9, 0x73, 0xbe, 0xf3,
+	0xbb, 0x2b, 0x80, 0x91, 0xc5, 0xc8, 0xdd, 0x49, 0x40, 0x19, 0x45, 0x45, 0xfe, 0x8d, 0x37, 0xa1,
+	0xbc, 0xe7, 0xfa, 0x23, 0x93, 0xbc, 0x40, 0xef, 0x41, 0x85, 0xb9, 0x1e, 0x09, 0x99, 0xe5, 0x4d,
+	0xea, 0xca, 0x86, 0xd2, 0x2c, 0x98, 0x09, 0x03, 0x3f, 0x96, 0x8a, 0x6d, 0xfb, 0x68, 0xbe, 0x22,
+	0xba, 0x01, 0x10, 0x92, 0x30, 0x74, 0xa9, 0x3f, 0x74, 0x9d, 0xfa, 0xa2, 0x14, 0x47, 0x1c, 0xdd,
+	0xc1, 0xbb, 0xb0, 0x6c, 0xd2, 0x31, 0xd1, 0xfd, 0x43, 0x8a, 0xae, 0x41, 0x39, 0xa0, 0x63, 0xc2,
+	0xf5, 0xa4, 0x99, 0x25, 0x4e, 0xea, 0x0e, 0x42, 0x50, 0xf4, 0x2d, 0x8f, 0x88, 0xd3, 0x15, 0x53,
+	0x7c, 0xa3, 0x35, 0x28, 0x8d, 0xc9, 0x31, 0x19, 0xd7, 0x0b, 0x1b, 0x4a, 0xb3, 0x64, 0x4a, 0x02,
+	0x1f, 0xc2, 0x72, 0x8f, 0x8e, 0x5c, 0x9f, 0x07, 0x50, 0x87, 0xb2, 0x65, 0xdb, 0x74, 0xea, 0x33,
+	0x61, 0xae, 0x62, 0xc6, 0x24, 0x52, 0xa1, 0x30, 0x9d, 0x81, 0xe1, 0x9f, 0xdc, 0x1a, 0xa3, 0x47,
+	0xc4, 0x17, 0xd6, 0x2a, 0xa6, 0x24, 0xb8, 0x85, 0x63, 0x12, 0x70, 0xa4, 0xf5, 0xa2, 0xb4, 0x10,
+	0x91, 0xd8, 0x8f, 0xfc, 0xf0, 0xf8, 0x11, 0x14, 0x6d, 0xea, 0x10, 0xe1, 0xa4, 0x64, 0x8a, 0x6f,
+	0xb4, 0x0e, 0x4b, 0x01, 0xb1, 0x42, 0xea, 0x47, 0x98, 0x23, 0x2a, 0xf6, 0x5c, 0x48, 0x3c, 0xdf,
+	0x82, 0x12, 0x8f, 0x32, 0xac, 0x17, 0x37, 0x0a, 0xcd, 0x4b, 0xf7, 0xaa, 0x77, 0x45, 0x4d, 0xe2,
+	0x9c, 0x98, 0x52, 0x88, 0x2f, 0x41, 0xa5, 0x47, 0x47, 0x74, 0xca, 0x4c, 0xf2, 0x02, 0x7f, 0x1e,
+	0x13, 0x39, 0xbd, 0xe3, 0xf7, 0x61, 0x75, 0x2b, 0x20, 0x16, 0x23, 0xdc, 0x3c, 0x4f, 0x51, 0x9c,
+	0x58, 0x25, 0x49, 0x2c, 0x1e, 0xa6, 0x95, 0xf2, 0xc6, 0x87, 0xa1, 0xc8, 0x01, 0x8b, 0x00, 0xdf,
+	0x0c, 0x46, 0xc8, 0xf0, 0x26, 0xac, 0x68, 0x3e, 0x23, 0xc1, 0xb6, 0xe5, 0x09, 0x10, 0xe7, 0x95,
+	0x1d, 0x7f, 0x97, 0x52, 0xbc, 0x08, 0x20, 0x37, 0xa1, 0xbc, 0xe3, 0xda, 0x47, 0x06, 0x3b, 0x4c,
+	0x99, 0x51, 0x32, 0x19, 0xbb, 0x0d, 0x15, 0x83, 0x32, 0xf7, 0xf0, 0x25, 0x57, 0xaa, 0x43, 0xd9,
+	0xa6, 0x3e, 0x23, 0x49, 0x43, 0x45, 0x24, 0x7e, 0x00, 0x2b, 0x9d, 0x80, 0x5a, 0x8e, 0x6d, 0x85,
+	0x2c, 0xca, 0xeb, 0xd4, 0x75, 0xc2, 0xba, 0xb2, 0x51, 0x68, 0x16, 0x4c, 0xf1, 0x9d, 0x3e, 0xbd,
+	0x98, 0x3d, 0x7d, 0x2b, 0x75, 0x9a, 0xc7, 0xb9, 0x06, 0xa5, 0xa4, 0x6d, 0x4b, 0xa6, 0x24, 0xf0,
+	0x89, 0x02, 0x95, 0xed, 0xa9, 0x3b, 0x76, 0xc4, 0xac, 0x5c, 0x87, 0xe5, 0x11, 0x27, 0x92, 0xac,
+	0x95, 0x05, 0x7d, 0xce, 0xb4, 0xdc, 0x82, 0xea, 0x98, 0x58, 0x0e, 0x09, 0x86, 0x71, 0xaa, 0x65,
+	0x0b, 0xae, 0x48, 0xae, 0x29, 0xe7, 0x6c, 0x1d, 0x96, 0x7c, 0xca, 0x5c, 0x9b, 0x44, 0xed, 0x1e,
+	0x51, 0xc9, 0xac, 0x95, 0x52, 0xb3, 0x86, 0x6e, 0xc2, 0x8a, 0x47, 0xbc, 0x03, 0x12, 0x0c, 0x25,
+	0xda, 0x25, 0x21, 0xbc, 0x24, 0x79, 0x5b, 0x62, 0xd0, 0x3e, 0x85, 0xca, 0x73, 0xea, 0xfa, 0x43,
+	0x8f, 0x97, 0xad, 0xbc, 0xa1, 0x34, 0xab, 0xf7, 0xae, 0xc8, 0x52, 0x88, 0x48, 0x9e, 0x50, 0xd7,
+	0xdf, 0xa5, 0x0e, 0x31, 0x97, 0x9f, 0x47, 0x5f, 0xf8, 0x37, 0x05, 0x6a, 0x42, 0xb6, 0x2b, 0xcc,
+	0xfc, 0x47, 0x7b, 0x01, 0xb5, 0x60, 0x79, 0x42, 0x43, 0x97, 0xc5, 0xa3, 0x9c, 0xc5, 0xb1, 0x17,
+	0x89, 0xcc, 0x99, 0x12, 0x7a, 0x57, 0x22, 0x27, 0xce, 0xd0, 0x62, 0x22, 0xec, 0x82, 0x04, 0x49,
+	0x9c, 0x36, 0xc3, 0xbf, 0xc7, 0x20, 0x75, 0xff, 0xd8, 0x65, 0xe4, 0x6d, 0x05, 0xb9, 0x01, 0x20,
+	0x45, 0x29, 0xb0, 0x15, 0xc1, 0x31, 0x38, 0xe2, 0x1b, 0x00, 0xae, 0xb0, 0xe3, 0x0c, 0x0f, 0x5e,
+	0x46, 0x75, 0xa9, 0x44, 0x9c, 0xce, 0x4b, 0xf4, 0x01, 0xd4, 0x12, 0xb1, 0x34, 0x21, 0xab, 0xb3,
+	0x3a, 0xd3, 0x89, 0xcd, 0xd8, 0x62, 0x6e, 0x53, 0x90, 0x2b, 0x11, 0xa7, 0xcd, 0x9b, 0xac, 0x2a,
+	0xc7, 0x5a, 0x00, 0x3f, 0x6f, 0xf8, 0xed, 0x8c, 0x56, 0xde, 0xa1, 0xbb, 0x0d, 0x25, 0x11, 0x56,
+	0x34, 0x75, 0xb5, 0x54, 0x8a, 0xe5, 0x32, 0x13, 0x52, 0xfc, 0x21, 0xac, 0xf0, 0xca, 0xcf, 0x80,
+	0x9c, 0x9f, 0x3a, 0x6c, 0xa5, 0x54, 0x2f, 0x08, 0x4d, 0x0d, 0x56, 0x7b, 0xc4, 0x3a, 0x9e, 0xe5,
+	0x05, 0xdf, 0x4f, 0x33, 0xf2, 0xae, 0xd8, 0x4f, 0x00, 0xf1, 0x9d, 0x92, 0x6a, 0xe1, 0xb9, 0x2b,
+	0xee, 0xd1, 0x1b, 0xea, 0x79, 0x1d, 0x7e, 0x0c, 0x97, 0xf7, 0x03, 0xcb, 0x0f, 0x0f, 0x49, 0xd0,
+	0x93, 0xb3, 0x3c, 0xcf, 0xdf, 0xc3, 0xd3, 0xda, 0x79, 0xdd, 0x7d, 0x04, 0x97, 0x07, 0x84, 0x09,
+	0xbc, 0x86, 0x58, 0x0e, 0xdc, 0x5d, 0xb2, 0x37, 0x94, 0xf4, 0xde, 0xe0, 0xde, 0xb2, 0xca, 0x79,
+	0xbd, 0x7d, 0x01, 0xd5, 0x01, 0x61, 0xb3, 0x35, 0x41, 0x5e, 0xa0, 0x4d, 0x28, 0x7a, 0xf1, 0xe9,
+	0x73, 0x96, 0x89, 0x50, 0xc0, 0x0f, 0x32, 0x47, 0xf3, 0x3a, 0xfe, 0x1e, 0xd6, 0x06, 0x84, 0xc9,
+	0x8a, 0xcc, 0xb6, 0xc3, 0x9c, 0xc4, 0x66, 0x16, 0xcc, 0xe2, 0xbf, 0x58, 0x30, 0xb8, 0x73, 0x86,
+	0x87, 0xbc, 0x28, 0x2f, 0x43, 0xad, 0xeb, 0x86, 0x07, 0x96, 0xef, 0xcc, 0x9a, 0xf7, 0xcb, 0x2c,
+	0x2b, 0x7f, 0x37, 0xd5, 0xb6, 0xa3, 0x8a, 0x89, 0x19, 0x99, 0x3f, 0x9d, 0xbf, 0x2a, 0x59, 0xf5,
+	0x8b, 0x99, 0x50, 0xd4, 0x82, 0xb2, 0xbc, 0x54, 0xe2, 0x47, 0xd2, 0xd5, 0x94, 0x62, 0x72, 0x4f,
+	0x98, 0xb1, 0x96, 0x18, 0x69, 0x37, 0x94, 0xb8, 0x42, 0x9e, 0x15, 0x27, 0xcd, 0xc8, 0x8b, 0x72,
+	0x13, 0x96, 0x04, 0x8e, 0xb0, 0x5e, 0x10, 0xde, 0xdf, 0x80, 0x19, 0x89, 0xf1, 0x57, 0x50, 0x93,
+	0x17, 0xc2, 0xdb, 0x07, 0xff, 0xac, 0xab, 0x8b, 0xd7, 0x2e, 0x7d, 0x3e, 0x6f, 0xed, 0x54, 0xa8,
+	0xf2, 0x20, 0xa5, 0x09, 0x11, 0xb6, 0x97, 0xe1, 0xe4, 0x8d, 0xbb, 0x05, 0x65, 0x79, 0xc3, 0xc4,
+	0x81, 0x5f, 0xcd, 0x04, 0x1e, 0xdf, 0x7c, 0x66, 0xac, 0x85, 0x35, 0x50, 0x4d, 0x12, 0x4e, 0xa8,
+	0x1f, 0x49, 0xe7, 0x77, 0x0f, 0xf7, 0x6b, 0xd9, 0x36, 0x99, 0xc8, 0xf7, 0xd0, 0xb2, 0x19, 0x51,
+	0x98, 0x9c, 0x32, 0x73, 0x41, 0x7b, 0xff, 0x17, 0x05, 0xaa, 0xa9, 0x50, 0xf8, 0x03, 0xef, 0xff,
+	0xbe, 0xc3, 0xf1, 0x9f, 0x0a, 0xac, 0x0a, 0x4c, 0xda, 0x31, 0xf1, 0x19, 0x87, 0xd4, 0x84, 0xe2,
+	0x91, 0xeb, 0x3b, 0xd1, 0xbe, 0x5b, 0x4b, 0xc5, 0x22, 0x54, 0x76, 0x5c, 0xdf, 0x31, 0x85, 0x46,
+	0x06, 0xfc, 0xe2, 0x3c, 0xf0, 0x85, 0xd3, 0xe0, 0x73, 0x3f, 0x8e, 0x9a, 0xa0, 0xd2, 0x09, 0x09,
+	0x2c, 0x46, 0x93, 0xf7, 0xa4, 0x7c, 0x70, 0x54, 0x63, 0xbe, 0x7c, 0x51, 0xde, 0xf9, 0x21, 0x8a,
+	0x27, 0x36, 0x82, 0xae, 0xc1, 0x95, 0xed, 0xaf, 0xf5, 0x5e, 0x77, 0xb8, 0xd7, 0x1f, 0xe8, 0xfb,
+	0x7a, 0xdf, 0x18, 0x1a, 0x7d, 0x43, 0x53, 0x17, 0xd0, 0x75, 0xb8, 0x7a, 0x4a, 0xd0, 0xd3, 0xda,
+	0x5d, 0xcd, 0x54, 0x95, 0x33, 0xce, 0x3c, 0xd5, 0xb7, 0x34, 0x75, 0xf1, 0x8c, 0x33, 0xbb, 0xda,
+	0x6e, 0x47, 0x33, 0xd5, 0xc2, 0x9d, 0x47, 0x91, 0xe3, 0xf8, 0x02, 0x40, 0x57, 0xa0, 0x26, 0x75,
+	0x9f, 0xf4, 0x75, 0x63, 0xd8, 0xdf, 0xd3, 0x0c, 0x75, 0x01, 0xbd, 0x03, 0xeb, 0x29, 0xa6, 0x6e,
+	0x3c, 0xd5, 0xf7, 0xb5, 0x61, 0xdf, 0xe8, 0x7d, 0xa3, 0x2a, 0x77, 0x7e, 0x8a, 0xfb, 0x63, 0x96,
+	0x68, 0xb4, 0x06, 0xaa, 0x54, 0xd7, 0x9e, 0x6a, 0xc6, 0x7e, 0x8c, 0x7c, 0x1d, 0x50, 0x9a, 0xbb,
+	0xa3, 0x6f, 0xed, 0x68, 0x5d, 0x55, 0x49, 0xd0, 0x49, 0x7e, 0x57, 0x1f, 0x74, 0xda, 0x46, 0x57,
+	0xeb, 0xaa, 0x8b, 0xa8, 0x0e, 0x6b, 0x69, 0xd1, 0xbe, 0xd9, 0x36, 0x06, 0x8f, 0x39, 0xee, 0xd3,
+	0x92, 0x38, 0x30, 0xb5, 0xd8, 0x79, 0xf8, 0xc7, 0xeb, 0x86, 0xf2, 0xea, 0x75, 0x43, 0xf9, 0xfb,
+	0x75, 0x43, 0xf9, 0xf9, 0xa4, 0xb1, 0xf0, 0xea, 0xa4, 0xb1, 0xf0, 0xd7, 0x49, 0x63, 0xe1, 0xdb,
+	0xdb, 0x23, 0x97, 0x3d, 0x9b, 0x1e, 0xdc, 0xb5, 0xa9, 0xd7, 0xfa, 0xf1, 0x19, 0xf1, 0x9f, 0x4d,
+	0xad, 0x70, 0xda, 0xf2, 0x46, 0x96, 0x47, 0x5a, 0xe2, 0xe7, 0xfe, 0x3e, 0xaf, 0xe6, 0xc1, 0x92,
+	0xf8, 0xfe, 0xec, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xfb, 0x4f, 0x1f, 0x54, 0xf6, 0x0f, 0x00,
+	0x00,
 }
 
 func (m *PingReq) Marshal() (dAtA []byte, err error) {
@@ -1408,6 +3368,1245 @@ func (m *BroadcastAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *GuildInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GuildInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GuildInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.JoinMode != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.JoinMode))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.MemberCount != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.MemberCount))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.Level != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Level))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.Notice) > 0 {
+		i -= len(m.Notice)
+		copy(dAtA[i:], m.Notice)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Notice)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.LeaderRoleId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.LeaderRoleId))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.GuildId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.GuildId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GuildMemberInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GuildMemberInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GuildMemberInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.JoinedAt != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.JoinedAt))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Position != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Position))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Level != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Level))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.RoleId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.RoleId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GuildInviteInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GuildInviteInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GuildInviteInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.CreatedAt != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.CreatedAt))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.InvitedByName) > 0 {
+		i -= len(m.InvitedByName)
+		copy(dAtA[i:], m.InvitedByName)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.InvitedByName)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.InvitedBy != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.InvitedBy))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.GuildName) > 0 {
+		i -= len(m.GuildName)
+		copy(dAtA[i:], m.GuildName)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.GuildName)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.GuildId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.GuildId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CreateGuildReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CreateGuildReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CreateGuildReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CreateGuildAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CreateGuildAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CreateGuildAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Guild != nil {
+		{
+			size, err := m.Guild.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGate(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *JoinGuildReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *JoinGuildReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *JoinGuildReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.GuildId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.GuildId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *JoinGuildAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *JoinGuildAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *JoinGuildAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Guild != nil {
+		{
+			size, err := m.Guild.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGate(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *LeaveGuildReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LeaveGuildReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LeaveGuildReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *LeaveGuildAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LeaveGuildAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LeaveGuildAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *KickGuildMemberReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *KickGuildMemberReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *KickGuildMemberReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.RoleId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.RoleId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *KickGuildMemberAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *KickGuildMemberAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *KickGuildMemberAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TransferLeaderReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TransferLeaderReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TransferLeaderReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.RoleId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.RoleId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TransferLeaderAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TransferLeaderAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TransferLeaderAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SetGuildNoticeReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SetGuildNoticeReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SetGuildNoticeReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Notice) > 0 {
+		i -= len(m.Notice)
+		copy(dAtA[i:], m.Notice)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Notice)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SetGuildNoticeAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SetGuildNoticeAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SetGuildNoticeAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SetJoinModeReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SetJoinModeReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SetJoinModeReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Mode != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Mode))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SetJoinModeAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SetJoinModeAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SetJoinModeAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SetMemberPositionReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SetMemberPositionReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SetMemberPositionReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Position != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Position))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.RoleId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.RoleId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SetMemberPositionAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SetMemberPositionAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SetMemberPositionAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DisbandGuildReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DisbandGuildReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DisbandGuildReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *DisbandGuildAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DisbandGuildAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DisbandGuildAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetGuildInfoReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetGuildInfoReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetGuildInfoReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.GuildId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.GuildId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetGuildInfoAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetGuildInfoAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetGuildInfoAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Members) > 0 {
+		for iNdEx := len(m.Members) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Members[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGate(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if m.Guild != nil {
+		{
+			size, err := m.Guild.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGate(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListGuildsReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListGuildsReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListGuildsReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *ListGuildsAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListGuildsAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListGuildsAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Guilds) > 0 {
+		for iNdEx := len(m.Guilds) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Guilds[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGate(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *InviteMemberReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *InviteMemberReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *InviteMemberReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.RoleId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.RoleId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *InviteMemberAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *InviteMemberAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *InviteMemberAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListInvitesReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListInvitesReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListInvitesReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *ListInvitesAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListInvitesAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListInvitesAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Invites) > 0 {
+		for iNdEx := len(m.Invites) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Invites[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGate(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RespondInviteReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RespondInviteReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RespondInviteReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Accept {
+		i--
+		if m.Accept {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.GuildId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.GuildId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RespondInviteAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RespondInviteAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RespondInviteAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Guild != nil {
+		{
+			size, err := m.Guild.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGate(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Reason) > 0 {
+		i -= len(m.Reason)
+		copy(dAtA[i:], m.Reason)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.Reason)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GuildInviteNtf) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GuildInviteNtf) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GuildInviteNtf) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.InvitedByName) > 0 {
+		i -= len(m.InvitedByName)
+		copy(dAtA[i:], m.InvitedByName)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.InvitedByName)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.InvitedBy != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.InvitedBy))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.GuildName) > 0 {
+		i -= len(m.GuildName)
+		copy(dAtA[i:], m.GuildName)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.GuildName)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.GuildId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.GuildId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GuildEventNtf) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GuildEventNtf) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GuildEventNtf) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.OperatorRoleId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.OperatorRoleId))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Position != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Position))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.GuildName) > 0 {
+		i -= len(m.GuildName)
+		copy(dAtA[i:], m.GuildName)
+		i = encodeVarintGate(dAtA, i, uint64(len(m.GuildName)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.GuildId != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.GuildId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Kind != 0 {
+		i = encodeVarintGate(dAtA, i, uint64(m.Kind))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintGate(dAtA []byte, offset int, v uint64) int {
 	offset -= sovGate(v)
 	base := offset
@@ -1658,6 +4857,563 @@ func (m *BroadcastAck) Size() (n int) {
 	_ = l
 	if m.Count != 0 {
 		n += 1 + sovGate(uint64(m.Count))
+	}
+	return n
+}
+
+func (m *GuildInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GuildId != 0 {
+		n += 1 + sovGate(uint64(m.GuildId))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.LeaderRoleId != 0 {
+		n += 1 + sovGate(uint64(m.LeaderRoleId))
+	}
+	l = len(m.Notice)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.Level != 0 {
+		n += 1 + sovGate(uint64(m.Level))
+	}
+	if m.MemberCount != 0 {
+		n += 1 + sovGate(uint64(m.MemberCount))
+	}
+	if m.JoinMode != 0 {
+		n += 1 + sovGate(uint64(m.JoinMode))
+	}
+	return n
+}
+
+func (m *GuildMemberInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.RoleId != 0 {
+		n += 1 + sovGate(uint64(m.RoleId))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.Level != 0 {
+		n += 1 + sovGate(uint64(m.Level))
+	}
+	if m.Position != 0 {
+		n += 1 + sovGate(uint64(m.Position))
+	}
+	if m.JoinedAt != 0 {
+		n += 1 + sovGate(uint64(m.JoinedAt))
+	}
+	return n
+}
+
+func (m *GuildInviteInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GuildId != 0 {
+		n += 1 + sovGate(uint64(m.GuildId))
+	}
+	l = len(m.GuildName)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.InvitedBy != 0 {
+		n += 1 + sovGate(uint64(m.InvitedBy))
+	}
+	l = len(m.InvitedByName)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.CreatedAt != 0 {
+		n += 1 + sovGate(uint64(m.CreatedAt))
+	}
+	return n
+}
+
+func (m *CreateGuildReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *CreateGuildAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.Guild != nil {
+		l = m.Guild.Size()
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *JoinGuildReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GuildId != 0 {
+		n += 1 + sovGate(uint64(m.GuildId))
+	}
+	return n
+}
+
+func (m *JoinGuildAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.Guild != nil {
+		l = m.Guild.Size()
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *LeaveGuildReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *LeaveGuildAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *KickGuildMemberReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.RoleId != 0 {
+		n += 1 + sovGate(uint64(m.RoleId))
+	}
+	return n
+}
+
+func (m *KickGuildMemberAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *TransferLeaderReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.RoleId != 0 {
+		n += 1 + sovGate(uint64(m.RoleId))
+	}
+	return n
+}
+
+func (m *TransferLeaderAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *SetGuildNoticeReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Notice)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *SetGuildNoticeAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *SetJoinModeReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Mode != 0 {
+		n += 1 + sovGate(uint64(m.Mode))
+	}
+	return n
+}
+
+func (m *SetJoinModeAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *SetMemberPositionReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.RoleId != 0 {
+		n += 1 + sovGate(uint64(m.RoleId))
+	}
+	if m.Position != 0 {
+		n += 1 + sovGate(uint64(m.Position))
+	}
+	return n
+}
+
+func (m *SetMemberPositionAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *DisbandGuildReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *DisbandGuildAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *GetGuildInfoReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GuildId != 0 {
+		n += 1 + sovGate(uint64(m.GuildId))
+	}
+	return n
+}
+
+func (m *GetGuildInfoAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.Guild != nil {
+		l = m.Guild.Size()
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if len(m.Members) > 0 {
+		for _, e := range m.Members {
+			l = e.Size()
+			n += 1 + l + sovGate(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *ListGuildsReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *ListGuildsAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if len(m.Guilds) > 0 {
+		for _, e := range m.Guilds {
+			l = e.Size()
+			n += 1 + l + sovGate(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *InviteMemberReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.RoleId != 0 {
+		n += 1 + sovGate(uint64(m.RoleId))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *InviteMemberAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *ListInvitesReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *ListInvitesAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if len(m.Invites) > 0 {
+		for _, e := range m.Invites {
+			l = e.Size()
+			n += 1 + l + sovGate(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *RespondInviteReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GuildId != 0 {
+		n += 1 + sovGate(uint64(m.GuildId))
+	}
+	if m.Accept {
+		n += 2
+	}
+	return n
+}
+
+func (m *RespondInviteAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovGate(uint64(m.Code))
+	}
+	l = len(m.Reason)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.Guild != nil {
+		l = m.Guild.Size()
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *GuildInviteNtf) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GuildId != 0 {
+		n += 1 + sovGate(uint64(m.GuildId))
+	}
+	l = len(m.GuildName)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.InvitedBy != 0 {
+		n += 1 + sovGate(uint64(m.InvitedBy))
+	}
+	l = len(m.InvitedByName)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	return n
+}
+
+func (m *GuildEventNtf) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Kind != 0 {
+		n += 1 + sovGate(uint64(m.Kind))
+	}
+	if m.GuildId != 0 {
+		n += 1 + sovGate(uint64(m.GuildId))
+	}
+	l = len(m.GuildName)
+	if l > 0 {
+		n += 1 + l + sovGate(uint64(l))
+	}
+	if m.Position != 0 {
+		n += 1 + sovGate(uint64(m.Position))
+	}
+	if m.OperatorRoleId != 0 {
+		n += 1 + sovGate(uint64(m.OperatorRoleId))
 	}
 	return n
 }
@@ -3206,6 +6962,3501 @@ func (m *BroadcastAck) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.Count |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GuildInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GuildInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GuildInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuildId", wireType)
+			}
+			m.GuildId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GuildId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LeaderRoleId", wireType)
+			}
+			m.LeaderRoleId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LeaderRoleId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Notice", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Notice = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Level", wireType)
+			}
+			m.Level = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Level |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MemberCount", wireType)
+			}
+			m.MemberCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MemberCount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field JoinMode", wireType)
+			}
+			m.JoinMode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.JoinMode |= GuildJoinMode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GuildMemberInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GuildMemberInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GuildMemberInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleId", wireType)
+			}
+			m.RoleId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RoleId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Level", wireType)
+			}
+			m.Level = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Level |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
+			}
+			m.Position = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Position |= GuildPosition(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field JoinedAt", wireType)
+			}
+			m.JoinedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.JoinedAt |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GuildInviteInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GuildInviteInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GuildInviteInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuildId", wireType)
+			}
+			m.GuildId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GuildId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuildName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GuildName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InvitedBy", wireType)
+			}
+			m.InvitedBy = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.InvitedBy |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InvitedByName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.InvitedByName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			m.CreatedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreatedAt |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CreateGuildReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CreateGuildReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CreateGuildReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CreateGuildAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CreateGuildAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CreateGuildAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Guild", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Guild == nil {
+				m.Guild = &GuildInfo{}
+			}
+			if err := m.Guild.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *JoinGuildReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: JoinGuildReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: JoinGuildReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuildId", wireType)
+			}
+			m.GuildId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GuildId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *JoinGuildAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: JoinGuildAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: JoinGuildAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Guild", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Guild == nil {
+				m.Guild = &GuildInfo{}
+			}
+			if err := m.Guild.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LeaveGuildReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LeaveGuildReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LeaveGuildReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LeaveGuildAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LeaveGuildAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LeaveGuildAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *KickGuildMemberReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: KickGuildMemberReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: KickGuildMemberReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleId", wireType)
+			}
+			m.RoleId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RoleId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *KickGuildMemberAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: KickGuildMemberAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: KickGuildMemberAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TransferLeaderReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TransferLeaderReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TransferLeaderReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleId", wireType)
+			}
+			m.RoleId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RoleId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TransferLeaderAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TransferLeaderAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TransferLeaderAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SetGuildNoticeReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SetGuildNoticeReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SetGuildNoticeReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Notice", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Notice = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SetGuildNoticeAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SetGuildNoticeAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SetGuildNoticeAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SetJoinModeReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SetJoinModeReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SetJoinModeReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Mode", wireType)
+			}
+			m.Mode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Mode |= GuildJoinMode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SetJoinModeAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SetJoinModeAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SetJoinModeAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SetMemberPositionReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SetMemberPositionReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SetMemberPositionReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleId", wireType)
+			}
+			m.RoleId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RoleId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
+			}
+			m.Position = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Position |= GuildPosition(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SetMemberPositionAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SetMemberPositionAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SetMemberPositionAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DisbandGuildReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DisbandGuildReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DisbandGuildReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DisbandGuildAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DisbandGuildAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DisbandGuildAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetGuildInfoReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetGuildInfoReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetGuildInfoReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuildId", wireType)
+			}
+			m.GuildId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GuildId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetGuildInfoAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetGuildInfoAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetGuildInfoAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Guild", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Guild == nil {
+				m.Guild = &GuildInfo{}
+			}
+			if err := m.Guild.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Members", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Members = append(m.Members, &GuildMemberInfo{})
+			if err := m.Members[len(m.Members)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListGuildsReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListGuildsReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListGuildsReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListGuildsAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListGuildsAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListGuildsAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Guilds", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Guilds = append(m.Guilds, &GuildInfo{})
+			if err := m.Guilds[len(m.Guilds)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InviteMemberReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: InviteMemberReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: InviteMemberReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleId", wireType)
+			}
+			m.RoleId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RoleId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InviteMemberAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: InviteMemberAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: InviteMemberAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListInvitesReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListInvitesReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListInvitesReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListInvitesAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListInvitesAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListInvitesAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Invites", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Invites = append(m.Invites, &GuildInviteInfo{})
+			if err := m.Invites[len(m.Invites)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RespondInviteReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RespondInviteReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RespondInviteReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuildId", wireType)
+			}
+			m.GuildId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GuildId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Accept", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Accept = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RespondInviteAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RespondInviteAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RespondInviteAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reason", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reason = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Guild", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Guild == nil {
+				m.Guild = &GuildInfo{}
+			}
+			if err := m.Guild.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GuildInviteNtf) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GuildInviteNtf: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GuildInviteNtf: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuildId", wireType)
+			}
+			m.GuildId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GuildId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuildName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GuildName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InvitedBy", wireType)
+			}
+			m.InvitedBy = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.InvitedBy |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InvitedByName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.InvitedByName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGate
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GuildEventNtf) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GuildEventNtf: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GuildEventNtf: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+			}
+			m.Kind = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Kind |= GuildEventKind(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuildId", wireType)
+			}
+			m.GuildId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GuildId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuildName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GuildName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
+			}
+			m.Position = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Position |= GuildPosition(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OperatorRoleId", wireType)
+			}
+			m.OperatorRoleId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.OperatorRoleId |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}

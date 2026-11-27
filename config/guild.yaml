@@ -1,0 +1,32 @@
+# 公会服务配置
+listen: "127.0.0.1:8903"
+logLevel: debug
+
+# game↔guild 共享密钥（RegisterGame HMAC）；空=不校验，仅联调
+guildSecret: "dev-guild-secret"
+
+# 实例标识与对外可达地址（注册到 etcd 用，空 = 自动生成 / 回退 listen）
+guildId: ""
+advertise: ""
+# 服务注册与发现（etcd）；endpoints 空 = 不注册
+registry:
+  endpoints: [] # 如 ["127.0.0.1:2379"]
+  prefix: ""    # 空 = /mgame
+  ttl: 10       # 租约秒数
+
+# MongoDB（guilds/members/invites 唯一持久层）；uri 空 = 启动失败
+mongo:
+  uri: "mongodb://127.0.0.1:27017"
+  database: "mgame"
+
+# Redis（全局 guildId 自增）；addr 空 = 启动失败
+redis:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 0
+
+# 公会业务参数
+guild:
+  maxMembers: 50   # 成员上限
+  nameMaxLen: 24   # 公会名最大长度
+  noticeMaxLen: 200 # 公告最大长度

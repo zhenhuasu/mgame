@@ -30,3 +30,7 @@ user:
   prefix: "mgame:user:" # Redis 缓存键前缀
   ttl: 300              # 缓存过期秒数，0=不过期
   autoCreateRole: true  # 角色列表为空时允许 EnterGame(role_id=0) 自动建角
+
+# game→guild 内网（公会服务地址与共享密钥；空 = 无公会功能）
+guildServers: ["127.0.0.1:8903"]
+guildSecret: "dev-guild-secret"

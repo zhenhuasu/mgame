@@ -45,6 +45,15 @@ func main() {
 	flow := flag.String("flow", "", "进入流程：create=先建角色；enter=按 -role 直接进入；空=有角色进入/无角色先建")
 	roleName := flag.String("role-name", "", "CreateRole 角色名（空=账号名）")
 	wait := flag.Duration("wait", 2*time.Second, "登录/广播后等待通知的时长")
+	guildOp := flag.String("guild", "", "公会操作: create|join|leave|kick|transfer|notice|disband|info|list|invite|invites|respond|set-join-mode|set-position")
+	guildName := flag.String("guild-name", "", "创建公会名")
+	guildID := flag.Int64("guild-id", 0, "公会 id（join/info/respond/set-* 用；info 0=自己所在公会）")
+	targetRole := flag.Int64("target-role", 0, "目标角色 id（kick/transfer/invite/set-position）")
+	targetName := flag.String("target-name", "", "目标角色名（invite 且 -target-role=0 时按名解析）")
+	notice := flag.String("notice", "", "公告内容（notice）")
+	joinMode := flag.String("join-mode", "", "加入方式: open|invite_only")
+	position := flag.String("position", "", "职位: vice|member")
+	accept := flag.Bool("accept", false, "响应邀请：true=接受，false=拒绝")
 	flag.Parse()
 
 	queue := cellnet.NewEventQueue()
@@ -89,6 +98,42 @@ func main() {
 
 		case *pb.EnterGameAck:
 			events <- evt{"entergameack", msg}
+
+		case *pb.CreateGuildAck:
+			events <- evt{"createguildack", msg}
+		case *pb.JoinGuildAck:
+			events <- evt{"joinguildack", msg}
+		case *pb.LeaveGuildAck:
+			events <- evt{"leaveguildack", msg}
+		case *pb.KickGuildMemberAck:
+			events <- evt{"kickguildack", msg}
+		case *pb.TransferLeaderAck:
+			events <- evt{"transferguildack", msg}
+		case *pb.SetGuildNoticeAck:
+			events <- evt{"noticeguildack", msg}
+		case *pb.SetJoinModeAck:
+			events <- evt{"joinmodeguildack", msg}
+		case *pb.SetMemberPositionAck:
+			events <- evt{"positionguildack", msg}
+		case *pb.DisbandGuildAck:
+			events <- evt{"disbandguildack", msg}
+		case *pb.GetGuildInfoAck:
+			events <- evt{"infoguildack", msg}
+		case *pb.ListGuildsAck:
+			events <- evt{"listguildsack", msg}
+		case *pb.InviteMemberAck:
+			events <- evt{"inviteguildack", msg}
+		case *pb.ListInvitesAck:
+			events <- evt{"invitesguildack", msg}
+		case *pb.RespondInviteAck:
+			events <- evt{"respondguildack", msg}
+
+		case *pb.GuildInviteNtf:
+			log.Infof("GuildInviteNtf guild=%d %q by=%d(%q)", msg.GuildId, msg.GuildName, msg.InvitedBy, msg.InvitedByName)
+			events <- evt{"guildinvitentf", msg}
+		case *pb.GuildEventNtf:
+			log.Infof("GuildEventNtf kind=%d guild=%d %q position=%d operator=%d", msg.Kind, msg.GuildId, msg.GuildName, msg.Position, msg.OperatorRoleId)
+			events <- evt{"guildeventntf", msg}
 
 		case *cellnet.SessionClosed:
 			log.Infof("closed: %v", msg.Reason)
@@ -223,6 +268,15 @@ func main() {
 			}
 			enterGame(id)
 		}
+	}
+
+	// 3.55 公会操作（进入游戏后）
+	if *guildOp != "" {
+		runGuild(conn, guildOpts{
+			op: *guildOp, name: *guildName, id: *guildID,
+			target: *targetRole, targetName: *targetName, notice: *notice,
+			joinMode: *joinMode, position: *position, accept: *accept,
+		}, waitFor, exit)
 	}
 
 	// 3.6 Hello 全链路：client → gate → game → gate → client

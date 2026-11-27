@@ -23,6 +23,10 @@ type Game struct {
 	Redis Redis `yaml:"redis"`
 	// MongoDB 连接（user/role 唯一持久层）；uri 空 = 未配置（启动失败）
 	Mongo Mongo `yaml:"mongo"`
+	// guild 服务地址列表（未启用注册中心时静态连接；空 = 无公会服务）
+	GuildServers []string `yaml:"guildServers"`
+	// game↔guild 共享密钥（RegisterGame HMAC；空 = 不校验，仅联调）
+	GuildSecret string `yaml:"guildSecret"`
 	// 用户数据键配置（game 专属）
 	User UserData `yaml:"user"`
 }

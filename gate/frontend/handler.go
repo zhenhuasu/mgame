@@ -222,7 +222,7 @@ func (s *Server) forwardC2S(ev cellnet.Event) {
 		log.Warnf("no game route uid=%d msg=%T", uid, msg)
 		return
 	}
-	fwd, err := EncodeForward(uid, msg)
+	fwd, err := EncodeTransmit(uid, msg)
 	if err != nil {
 		log.Errorf("encode forward uid=%d msg=%T: %v", uid, msg, err)
 		return
@@ -247,11 +247,11 @@ func (s *Server) handleBroadcast(ev cellnet.Event, req *pb.BroadcastReq) {
 	ses.Send(&pb.BroadcastAck{Count: int32(count)})
 }
 
-// EncodeForward 将业务消息编码为 ForwardC2S 信封
-func EncodeForward(uid int64, msg interface{}) (*pb.ForwardC2S, error) {
+// EncodeTransmit 将业务消息编码为通用 Transmit 信封
+func EncodeTransmit(uid int64, msg interface{}) (*pb.Transmit, error) {
 	data, meta, err := codec.EncodeMessage(msg, nil)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ForwardC2S{Uid: uid, MsgId: uint32(meta.ID), Payload: data}, nil
+	return &pb.Transmit{Uid: uid, MsgId: uint32(meta.ID), Payload: data}, nil
 }

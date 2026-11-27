@@ -50,11 +50,15 @@ message PlayerLoginAck {
   repeated RoleInfo roles = 4;
 }
 
-// 业务消息转发信封（外层只带 msgID+payload，不解析业务）
-message ForwardC2S {
-  int64 uid = 1;
-  uint32 msg_id = 2;
-  bytes payload = 3;
+// 通用服务间上行信封（gate→game、game→guild；后续服务间通用）。
+// core/svcproc 在 OnInboundEvent 解包，业务层只注册/收到 payload 的最终协议。
+message Transmit {
+  int64  uid        = 1; // 来源用户（gate 填；game→guild 沿用）
+  int64  role_id    = 2; // 在线角色（game 填，guild 业务需要）
+  string role_name  = 3;
+  int32  role_level = 4;
+  uint32 msg_id     = 5; // payload 的最终消息 ID
+  bytes  payload    = 6;
 }
 
 message ForwardS2C {
@@ -70,4 +74,29 @@ message HelloReq {
 
 message HelloAck {
   string content = 1;
+}
+
+// ---------- game↔guild 内网协议（tcp.ltv） ----------
+
+// 握手：game 连上 guild 后先发
+// hmac = base64(HMAC-SHA256(guildSecret, game_id|ts|nonce))，secret 为空时留空
+message RegisterGame {
+  string game_id = 1;
+  int64  ts      = 2;
+  string nonce   = 3;
+  string hmac    = 4;
+}
+
+// 公会回包（guild → game → ForwardS2C → gate → client）
+message GuildS2C {
+  int64  uid    = 1;
+  uint32 msg_id = 2;
+  bytes  payload = 3;
+}
+
+// 公会推送（guild → 所有已握手 game）：game 按在线角色命中后推送
+message GuildNotify {
+  int64  role_id = 1;
+  uint32 msg_id  = 2;
+  bytes  payload = 3;
 }

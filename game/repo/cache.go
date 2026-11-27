@@ -74,6 +74,11 @@ func (c *cached) LoadRole(ctx context.Context, account string, roleID int64) (*m
 	return c.inner.LoadRole(ctx, account, roleID)
 }
 
+// LoadRoleByName 直通内层（公会邀请按名解析，不缓存）
+func (c *cached) LoadRoleByName(ctx context.Context, name string) (*model.Role, bool, error) {
+	return c.inner.LoadRoleByName(ctx, name)
+}
+
 // CreateRole 走内层写入，随后失效缓存
 func (c *cached) CreateRole(ctx context.Context, role *model.Role) error {
 	if err := c.inner.CreateRole(ctx, role); err != nil {

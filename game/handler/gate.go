@@ -10,13 +10,20 @@ import (
 	pb "github.com/zhenhuasu/mgame/proto"
 )
 
-// onAccepted gate 连入
+// onAccepted gate 连入（排除 guild Connector 等非 Acceptor 会话）
 func (h *Handler) onAccepted(ev cellnet.Event) {
+	if ev.Session().Peer().TypeName() != "tcp.Acceptor" {
+		return
+	}
 	log.Infof("gate connected id=%d", ev.Session().ID())
 }
 
-// onClosed gate 断开：摘除其名下在线记录（不清在线角色）与握手状态
+// onClosed gate 断开：摘除其名下在线记录（不清在线角色）与握手状态。
+// guild Connector 断开由 guildclient 自行处理，这里按 peer 类型过滤。
 func (h *Handler) onClosed(ev cellnet.Event) {
+	if ev.Session().Peer().TypeName() != "tcp.Acceptor" {
+		return
+	}
 	msg := ev.Message().(*cellnet.SessionClosed)
 
 	removed := h.mgr.RemoveBySession(ev.Session().ID())

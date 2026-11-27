@@ -7,9 +7,12 @@ import (
 	"time"
 
 	"github.com/zhenhuasu/mgame/config"
+	"github.com/zhenhuasu/mgame/core/discover"
 	"github.com/zhenhuasu/mgame/core/mongo"
 	"github.com/zhenhuasu/mgame/core/net"
 	"github.com/zhenhuasu/mgame/core/redis"
+	"github.com/zhenhuasu/mgame/core/registry"
+	"github.com/zhenhuasu/mgame/game/guildclient"
 	"github.com/zhenhuasu/mgame/game/handler"
 	"github.com/zhenhuasu/mgame/game/network"
 	"github.com/zhenhuasu/mgame/game/repo"
@@ -33,7 +36,7 @@ func main() {
 	if err := net.Init(net.InitOptions{
 		LogLevel: cfg.LogLevel,
 		// 正则子串匹配："tcp"→tcppeer，"game"→game，"svc"→svcproc
-		LogNames: []string{"tcp", "game", "svc"},
+		LogNames: []string{"tcp", "game", "svc", "discover"},
 		Registry: cfg.Registry,
 	}); err != nil {
 		log.Fatalf("init: %v", err)
@@ -69,7 +72,18 @@ func main() {
 	stored := repo.NewCached(r, rdb, cfg.User.Prefix, time.Duration(cfg.User.TTL)*time.Second)
 
 	mgr := service.NewUserManager(stored, service.NewRoleIDGen(rdb, ""), cfg.User.AutoCreateRole)
-	h := handler.New(mgr, cfg.GateSecret)
+
+	// guild 连接池：registry 启用时按注册中心发现 guild，否则静态 GuildServers
+	var gdis discover.Discovery = discover.Static(cfg.GuildServers)
+	if reg := net.Registry(); reg != nil {
+		gdis = discover.NewRegistry(reg, registry.ServiceGuild, gdis)
+	}
+	guildclient.SetSecret(cfg.GuildSecret)
+	gpool := guildclient.New(cfg.GameID, gdis)
+
+	h := handler.New(mgr, cfg.GateSecret, gpool)
+	gpool.SetForwarder(h)
+	gpool.Start(ctx)
 
 	// 监听 gate 连入（内部阻塞在事件循环，ctx 取消后返回）
 	if err := network.Listen(ctx, cfg, h); err != nil {
