@@ -54,6 +54,10 @@ func main() {
 	joinMode := flag.String("join-mode", "", "加入方式: open|invite_only")
 	position := flag.String("position", "", "职位: vice|member")
 	accept := flag.Bool("accept", false, "响应邀请：true=接受，false=拒绝")
+	rankOp := flag.String("rank", "", "排行榜操作: list")
+	rankBoard := flag.String("rank-board", "power", "榜单: power|level")
+	rankOffset := flag.Int("rank-offset", 0, "榜单偏移")
+	rankLimit := flag.Int("rank-limit", 20, "榜单条数")
 	flag.Parse()
 
 	queue := cellnet.NewEventQueue()
@@ -127,6 +131,9 @@ func main() {
 			events <- evt{"invitesguildack", msg}
 		case *pb.RespondInviteAck:
 			events <- evt{"respondguildack", msg}
+
+		case *pb.RankListAck:
+			events <- evt{"ranklistack", msg}
 
 		case *pb.GuildInviteNtf:
 			log.Infof("GuildInviteNtf guild=%d %q by=%d(%q)", msg.GuildId, msg.GuildName, msg.InvitedBy, msg.InvitedByName)
@@ -238,7 +245,7 @@ func main() {
 		log.Infof("create role ok id=%d name=%q level=%d", crAck.Role.RoleId, crAck.Role.Name, crAck.Role.Level)
 		return crAck.Role
 	}
-	enterGame := func(id int64) {
+	enterGame := func(id int64) *pb.RoleInfo {
 		conn.Send(&pb.EnterGameReq{RoleId: id})
 		raw, ok := waitFor("entergameack", 3*time.Second)
 		if !ok {
@@ -250,27 +257,35 @@ func main() {
 			log.Errorf("enter game failed code=%d reason=%q", egAck.Code, egAck.Reason)
 			exit(1)
 		}
-		log.Infof("enter game ok role_id=%d name=%q level=%d", egAck.Role.RoleId, egAck.Role.Name, egAck.Role.Level)
+		log.Infof("enter game ok role_id=%d name=%q level=%d exp=%d power=%d",
+			egAck.Role.RoleId, egAck.Role.Name, egAck.Role.Level, egAck.Role.Exp, egAck.Role.Power)
+		return egAck.Role
 	}
 
+	var currentRole *pb.RoleInfo
 	switch *flow {
 	case "create":
-		enterGame(createRole().RoleId)
+		currentRole = enterGame(createRole().RoleId)
 	case "enter":
-		enterGame(*roleID)
+		currentRole = enterGame(*roleID)
 	default: // 空
 		if len(ack.Roles) == 0 {
-			enterGame(createRole().RoleId)
+			currentRole = enterGame(createRole().RoleId)
 		} else {
 			id := *roleID
 			if id == 0 {
 				id = ack.Roles[0].RoleId
 			}
-			enterGame(id)
+			currentRole = enterGame(id)
 		}
 	}
 
-	// 3.55 公会操作（进入游戏后）
+	// 3.55 排行榜查询（进入游戏后）
+	if *rankOp != "" {
+		runRank(conn, *rankOp, *rankBoard, *rankOffset, *rankLimit, currentRole, waitFor, exit)
+	}
+
+	// 3.6 公会操作（进入游戏后）
 	if *guildOp != "" {
 		runGuild(conn, guildOpts{
 			op: *guildOp, name: *guildName, id: *guildID,

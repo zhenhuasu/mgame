@@ -88,6 +88,10 @@ func (c *cached) CreateRole(ctx context.Context, role *model.Role) error {
 	return nil
 }
 
+func (c *cached) UpdateRole(ctx context.Context, role *model.Role) error {
+	return c.inner.UpdateRole(ctx, role)
+}
+
 // EnsureIndexes 直通内层
 func (c *cached) EnsureIndexes(ctx context.Context) error { return c.inner.EnsureIndexes(ctx) }
 

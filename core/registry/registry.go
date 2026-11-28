@@ -16,6 +16,7 @@ const (
 	ServiceGate  = "gate"
 	ServiceGame  = "game"
 	ServiceGuild = "guild"
+	ServiceRank  = "rank"
 )
 
 // Instance 注册的服务实例

@@ -23,6 +23,9 @@ func registerPoolHandlers(g *Pool) {
 // onConnected game 连接建立/重连。peer 名即 game 地址。
 func (g *Pool) onConnected(ev cellnet.Event) {
 	addr := ev.Session().Peer().(cellnet.PeerProperty).Name()
+	if !g.owns(addr) {
+		return
+	}
 	g.setUp(addr, true)
 	log.Infof("game connected addr=%s", addr)
 	ev.Session().Send(signRegisterGate(g.gateID))
@@ -41,6 +44,9 @@ func (g *Pool) onClosed(ev cellnet.Event) {
 	}
 	msg := ev.Message().(*cellnet.SessionClosed)
 	addr := ev.Session().Peer().(cellnet.PeerProperty).Name()
+	if !g.owns(addr) {
+		return
+	}
 	g.setUp(addr, false)
 	log.Warnf("game disconnected addr=%s reason=%v", addr, msg.Reason)
 }

@@ -73,7 +73,10 @@ func (h *Handler) onPlayerOffline(ev cellnet.Event) {
 func toRoleInfo(roles []model.Role) []*pb.RoleInfo {
 	out := make([]*pb.RoleInfo, 0, len(roles))
 	for _, r := range roles {
-		out = append(out, &pb.RoleInfo{RoleId: r.ID, Name: r.Name, Level: r.Level})
+		out = append(out, &pb.RoleInfo{
+			RoleId: r.ID, Name: r.Name, Level: r.Level,
+			Avatar: r.Avatar, Exp: r.Exp, Power: r.Power,
+		})
 	}
 	return out
 }
@@ -83,5 +86,8 @@ func toRoleInfo1(r *model.Role) *pb.RoleInfo {
 	if r == nil {
 		return nil
 	}
-	return &pb.RoleInfo{RoleId: r.ID, Name: r.Name, Level: r.Level}
+	return &pb.RoleInfo{
+		RoleId: r.ID, Name: r.Name, Level: r.Level,
+		Avatar: r.Avatar, Exp: r.Exp, Power: r.Power,
+	}
 }

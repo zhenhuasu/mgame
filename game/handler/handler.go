@@ -8,6 +8,7 @@ import (
 
 	"github.com/zhenhuasu/mgame/core/net"
 	"github.com/zhenhuasu/mgame/core/svcproc"
+	"github.com/zhenhuasu/mgame/game/model"
 	"github.com/zhenhuasu/mgame/game/service"
 
 	pb "github.com/zhenhuasu/mgame/proto"
@@ -20,21 +21,27 @@ type GuildSender interface {
 	Send(t *pb.Transmit) bool
 }
 
+type RankSender interface {
+	UpdateRole(uid int64, role *model.Role) bool
+}
+
 // Handler 消息处理单元：持有用户管理器与握手表（事件在单队列内串行，无需加锁）
 type Handler struct {
 	mgr    *service.UserManager
 	secret string // gate↔game 内网密钥，空 = 不校验
 	guild  GuildSender
+	rank   RankSender
 
 	authed map[int64]bool // 已完成 RegisterGate 握手的 gate 会话
 }
 
 // New 创建处理单元
-func New(mgr *service.UserManager, gateSecret string, guild GuildSender) *Handler {
+func New(mgr *service.UserManager, gateSecret string, guild GuildSender, rank RankSender) *Handler {
 	return &Handler{
 		mgr:    mgr,
 		secret: gateSecret,
 		guild:  guild,
+		rank:   rank,
 		authed: make(map[int64]bool),
 	}
 }
@@ -66,4 +73,17 @@ func (h *Handler) registerAuthed(msg interface{}, fn func(cellnet.Event, svcproc
 		}
 		fn(ev, rc)
 	})
+}
+
+func (h *Handler) RoleProgressChanged(uid int64, role *model.Role, levelUps int) {
+	if h.rank == nil {
+		return
+	}
+	if !h.rank.UpdateRole(uid, role) {
+		log.Warnf("rank unavailable uid=%d role=%d level_ups=%d", uid, role.ID, levelUps)
+	}
+}
+
+func (h *Handler) NotifyRankChange(roleID int64, board pb.RankBoard, oldRank, newRank int32, score int64) {
+	log.Infof("rank changed role=%d board=%d old=%d new=%d score=%d", roleID, board, oldRank, newRank, score)
 }

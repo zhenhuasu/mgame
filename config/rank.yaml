@@ -1,0 +1,26 @@
+# 排行榜服务配置
+listen: "127.0.0.1:8904"
+logLevel: debug
+
+# gate/game↔rank 共享密钥（RegisterRank HMAC；空=不校验，仅联调）
+rankSecret: "dev-rank-secret"
+
+# 实例标识与对外可达地址（注册到 etcd 用，空 = 自动生成 / 回退 listen）
+rankId: ""
+advertise: ""
+# 服务注册与发现（etcd）；endpoints 空 = 不注册
+registry:
+  endpoints: []
+  prefix: ""
+  ttl: 10
+
+# Redis（排行榜 ZSET 与角色展示信息）；addr 空 = 启动失败
+redis:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 0
+
+# 榜单查询分页
+rank:
+  defaultLimit: 20
+  maxLimit: 100

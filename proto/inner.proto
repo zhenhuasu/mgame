@@ -100,3 +100,46 @@ message GuildNotify {
   uint32 msg_id  = 2;
   bytes  payload = 3;
 }
+
+// ---------- gate/game ↔ rank 内网协议（tcp.ltv） ----------
+
+// 握手：gate/game 连上 rank 后先发
+// hmac = base64(HMAC-SHA256(rankSecret, client_id|ts|nonce))，secret 为空时留空
+message RegisterRank {
+  string client_id = 1;
+  string kind = 2; // game | gate
+  int64  ts = 3;
+  string nonce = 4;
+  string hmac = 5;
+}
+
+message RegisterRankAck {
+  int32 code = 1;
+}
+
+message RankProfile {
+  int64 role_id = 1;
+  string name = 2;
+  string avatar = 3;
+  int32 level = 4;
+}
+
+enum RankUpdateMode {
+  RANK_UPDATE_DELTA = 0;
+  RANK_UPDATE_OVERWRITE = 1;
+}
+
+message RankUpdate {
+  RankProfile profile = 1;
+  RankBoard board = 2;
+  RankUpdateMode mode = 3;
+  int64 value = 4; // delta 模式为增量，overwrite 模式为最终分数
+}
+
+message RankChangeNotify {
+  int64 role_id = 1;
+  RankBoard board = 2;
+  int32 old_rank = 3; // 1-based，0=未上榜
+  int32 new_rank = 4;
+  int64 score = 5;
+}

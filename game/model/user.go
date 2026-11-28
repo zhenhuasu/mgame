@@ -20,4 +20,7 @@ type Role struct {
 	Account string `json:"account"` // 所属账号
 	Name    string `json:"name"`
 	Level   int32  `json:"level"`
+	Avatar  string `json:"avatar"`
+	Exp     int64  `json:"exp"`
+	Power   int64  `json:"power"`
 }

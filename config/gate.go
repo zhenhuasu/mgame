@@ -27,6 +27,10 @@ type Gate struct {
 	Auth Auth `yaml:"auth"`
 	// gate↔game 共享密钥（RegisterGate HMAC；空 = 不校验，仅联调）
 	GateSecret string `yaml:"gateSecret"`
+	// rank 服务地址列表（未启用注册中心时静态连接；空 = 无排行榜服务）
+	RankServers []string `yaml:"rankServers"`
+	// gate↔rank 共享密钥（RegisterRank HMAC；空 = 不校验，仅联调）
+	RankSecret string `yaml:"rankSecret"`
 	// 对外可达地址（注册到 etcd 用，host:port 或 ws://host:port/path；空 = 回退 listen）
 	Advertise string `yaml:"advertise"`
 	// 服务注册与发现（etcd），空 endpoints = 不启用

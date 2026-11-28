@@ -12,6 +12,7 @@ import (
 	"github.com/zhenhuasu/mgame/core/registry"
 	"github.com/zhenhuasu/mgame/gate/backend"
 	"github.com/zhenhuasu/mgame/gate/frontend"
+	"github.com/zhenhuasu/mgame/gate/rankclient"
 	"github.com/zhenhuasu/mgame/gate/session"
 )
 
@@ -24,6 +25,7 @@ func run(ctx context.Context, cfg *config.Gate) error {
 	// 鉴权：前端 token 校验器 + 后端内网共享密钥
 	frontend.Configure(cfg.Auth)
 	backend.SetSecret(cfg.GateSecret)
+	rankclient.SetSecret(cfg.RankSecret)
 
 	// 客户端登录态（frontend 维护，backend 回投时查询）
 	mgr := session.New(time.Duration(cfg.Auth.TokenTTL) * time.Second)
@@ -36,8 +38,16 @@ func run(ctx context.Context, cfg *config.Gate) error {
 	pool := backend.New(cfg.GateID, dis, mgr)
 	pool.Start(ctx)
 
+	// rank 连接池：registry 启用时按注册中心发现 rank，否则静态 RankServers
+	var rdis discover.Discovery = discover.Static(cfg.RankServers)
+	if reg := net.Registry(); reg != nil {
+		rdis = discover.NewRegistry(reg, registry.ServiceRank, rdis)
+	}
+	rpool := rankclient.New(cfg.GateID, rdis)
+	rpool.Start(ctx)
+
 	// 前端：注册客户端处理函数并起 ws 监听
-	srv := frontend.New(cfg, mgr, pool)
+	srv := frontend.New(cfg, mgr, pool, rpool)
 	if err := srv.Start(); err != nil {
 		return err
 	}

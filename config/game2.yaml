@@ -34,3 +34,13 @@ user:
 # game→guild 内网（公会服务地址与共享密钥；空 = 无公会功能）
 guildServers: ["127.0.0.1:8903"]
 guildSecret: "dev-guild-secret"
+
+# game→rank 内网（排行榜写入；空 = 无排行榜功能）
+rankServers: ["127.0.0.1:8904"]
+rankSecret: "dev-rank-secret"
+
+# 角色成长：升到下一级需 expBase*当前等级经验，每次升级战力 +powerPerLevel
+role:
+  expBase: 100
+  powerPerLevel: 100
+  maxLevel: 100

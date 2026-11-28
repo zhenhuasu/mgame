@@ -23,6 +23,9 @@ func (g *Pool) onConnected(ev cellnet.Event) {
 		return
 	}
 	addr := ev.Session().Peer().(cellnet.PeerProperty).Name()
+	if !g.owns(addr) {
+		return
+	}
 	g.setUp(addr, true)
 	log.Infof("guild connected addr=%s", addr)
 	ev.Session().Send(signRegisterGame(g.gameID))
@@ -35,6 +38,9 @@ func (g *Pool) onClosed(ev cellnet.Event) {
 	}
 	msg := ev.Message().(*cellnet.SessionClosed)
 	addr := ev.Session().Peer().(cellnet.PeerProperty).Name()
+	if !g.owns(addr) {
+		return
+	}
 	g.setUp(addr, false)
 	log.Warnf("guild disconnected addr=%s reason=%v", addr, msg.Reason)
 }

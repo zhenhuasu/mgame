@@ -22,21 +22,42 @@ type OnlineUser struct {
 	Session cellnet.Session // 所属 gate 连接
 }
 
+type RoleRules struct {
+	ExpBase       int64
+	PowerPerLevel int64
+	MaxLevel      int32
+}
+
+type ProgressNotifier interface {
+	RoleProgressChanged(uid int64, role *model.Role, levelUps int)
+}
+
 // UserManager 在线用户管理 + 角色业务（依赖仓储与全局 ID 生成）
 type UserManager struct {
 	repo           repo.UserRepo
 	idgen          *RoleIDGen
 	autoCreateRole bool
+	rules          RoleRules
+	notifier       ProgressNotifier
 	users          map[int64]*OnlineUser // uid → 在线用户
 }
 
 // NewUserManager autoCreateRole：允许 EnterGame(role_id=0) 在无角色时自动建角
-func NewUserManager(r repo.UserRepo, idgen *RoleIDGen, autoCreateRole bool) *UserManager {
+func NewUserManager(r repo.UserRepo, idgen *RoleIDGen, autoCreateRole bool, rules RoleRules) *UserManager {
 	return &UserManager{
 		repo:           r,
 		idgen:          idgen,
 		autoCreateRole: autoCreateRole,
+		rules:          rules,
 		users:          make(map[int64]*OnlineUser),
+	}
+}
+
+func (m *UserManager) SetProgressNotifier(n ProgressNotifier) { m.notifier = n }
+
+func (m *UserManager) notifyProgress(uid int64, role *model.Role, levelUps int) {
+	if m.notifier != nil {
+		m.notifier.RoleProgressChanged(uid, role, levelUps)
 	}
 }
 
@@ -164,7 +185,13 @@ func (m *UserManager) EnterGame(ctx context.Context, uid int64, roleID int64) (*
 		if len(ou.User.RoleIDs) > 0 {
 			return nil, fmt.Errorf("role_id required")
 		}
-		return m.CreateRole(ctx, uid, ou.Account)
+		role, err := m.CreateRole(ctx, uid, ou.Account)
+		if err != nil {
+			return nil, err
+		}
+		ou.User.OnlineRole = role
+		m.notifyProgress(uid, role, 0)
+		return role, nil
 	}
 
 	// 按 account 限定归属，加载完整角色数据
@@ -176,5 +203,67 @@ func (m *UserManager) EnterGame(ctx context.Context, uid int64, roleID int64) (*
 		return nil, fmt.Errorf("role %d not found", roleID)
 	}
 	ou.User.OnlineRole = role
+	m.notifyProgress(uid, role, 0)
+	return role, nil
+}
+
+func (m *UserManager) GainExp(ctx context.Context, uid int64, amount int64) (*model.Role, int, error) {
+	if amount <= 0 {
+		return nil, 0, fmt.Errorf("exp amount must be > 0")
+	}
+	ou, ok := m.users[uid]
+	if !ok || ou.User.OnlineRole == nil {
+		return nil, 0, repo.ErrNotOnline
+	}
+	role := ou.User.OnlineRole
+	if role.Exp > (1<<63-1)-amount {
+		return nil, 0, fmt.Errorf("exp overflow")
+	}
+
+	exp := role.Exp + amount
+	level := role.Level
+	power := role.Power
+	levelUps := 0
+	for level < m.rules.MaxLevel {
+		need := m.rules.ExpBase * int64(level)
+		if need <= 0 || exp < need {
+			break
+		}
+		exp -= need
+		level++
+		power += m.rules.PowerPerLevel
+		levelUps++
+	}
+	if level >= m.rules.MaxLevel {
+		exp = 0
+	}
+
+	updated := *role
+	updated.Exp = exp
+	updated.Level = level
+	updated.Power = power
+	if err := m.repo.UpdateRole(ctx, &updated); err != nil {
+		return nil, 0, err
+	}
+	*role = updated
+	if levelUps > 0 {
+		m.notifyProgress(uid, role, levelUps)
+	}
+	return role, levelUps, nil
+}
+
+func (m *UserManager) SetAvatar(ctx context.Context, uid int64, avatar string) (*model.Role, error) {
+	ou, ok := m.users[uid]
+	if !ok || ou.User.OnlineRole == nil {
+		return nil, repo.ErrNotOnline
+	}
+	role := ou.User.OnlineRole
+	updated := *role
+	updated.Avatar = avatar
+	if err := m.repo.UpdateRole(ctx, &updated); err != nil {
+		return nil, err
+	}
+	*role = updated
+	m.notifyProgress(uid, role, 0)
 	return role, nil
 }

@@ -190,6 +190,21 @@ func (g *Pool) SendTo(addr string, msg interface{}) bool {
 	return true
 }
 
+func (g *Pool) owns(addr string) bool {
+	g.mu.Lock()
+	_, ok := g.conns[addr]
+	g.mu.Unlock()
+	if ok {
+		return true
+	}
+	for _, a := range g.dis.Addrs() {
+		if a == addr {
+			return true
+		}
+	}
+	return false
+}
+
 // setUp 标记连接就绪状态
 func (g *Pool) setUp(addr string, up bool) {
 	g.mu.Lock()

@@ -2,6 +2,7 @@ package frontend
 
 import (
 	stdnet "net"
+	"time"
 
 	"github.com/davyxu/cellnet"
 	"github.com/davyxu/cellnet/codec"
@@ -26,17 +27,22 @@ type GameRouter interface {
 	SendTo(addr string, msg interface{}) bool
 }
 
+type RankQuerier interface {
+	Query(req *pb.RankListReq, timeout time.Duration, cb func(*pb.RankListAck, error)) bool
+}
+
 // Server 客户端侧处理单元：持有登录态与后端路由，handler 均为其方法，
 // 由 net.Register 绑定到统一 dispatch。
 type Server struct {
 	cfg   *config.Gate
 	mgr   *session.Manager
 	games GameRouter
+	rank  RankQuerier
 }
 
 // New 创建客户端侧处理单元
-func New(cfg *config.Gate, mgr *session.Manager, games GameRouter) *Server {
-	return &Server{cfg: cfg, mgr: mgr, games: games}
+func New(cfg *config.Gate, mgr *session.Manager, games GameRouter, rank RankQuerier) *Server {
+	return &Server{cfg: cfg, mgr: mgr, games: games, rank: rank}
 }
 
 // registerHandlers 注册 ws 侧处理函数（含 SessionClosed 分流，须在起循环前调用）
@@ -46,6 +52,7 @@ func (s *Server) registerHandlers() {
 	net.Register(&pb.PingReq{}, s.onPing)
 	net.Register(&pb.LoginReq{}, s.onLogin)
 	net.Register(&pb.LogoutReq{}, s.onLogout)
+	net.Register(&pb.RankListReq{}, s.onRankList)
 	// 联调后门仅在 dev 模式注册；生产（jwt）不暴露客户端广播入口
 	if debugHandlers {
 		net.Register(&pb.BroadcastReq{}, s.onBroadcast)
@@ -100,6 +107,33 @@ func (s *Server) onLogout(ev cellnet.Event) {
 // onBroadcast 联调用：客户端触发广播
 func (s *Server) onBroadcast(ev cellnet.Event) {
 	s.handleBroadcast(ev, ev.Message().(*pb.BroadcastReq))
+}
+
+func (s *Server) onRankList(ev cellnet.Event) {
+	ses := ev.Session()
+	req := ev.Message().(*pb.RankListReq)
+	if _, ok := s.requireLogin(ev); !ok {
+		ses.Send(&pb.RankListAck{Code: 1, Reason: "not logged in"})
+		return
+	}
+	if s.rank == nil {
+		ses.Send(&pb.RankListAck{Code: 1, Reason: "rank unavailable"})
+		return
+	}
+	sid := ses.ID()
+	ok := s.rank.Query(req, 2*time.Second, func(ack *pb.RankListAck, err error) {
+		if _, ok := s.mgr.UIDBySession(sid); !ok {
+			return
+		}
+		if err != nil {
+			ses.Send(&pb.RankListAck{Code: 1, Reason: "rank unavailable"})
+			return
+		}
+		ses.Send(ack)
+	})
+	if !ok {
+		ses.Send(&pb.RankListAck{Code: 1, Reason: "rank unavailable"})
+	}
 }
 
 func (s *Server) handleLogin(ev cellnet.Event, req *pb.LoginReq) {
@@ -209,6 +243,9 @@ func (s *Server) handleLogout(ev cellnet.Event) {
 
 // forwardC2S 未被 gate 处理的业务消息 → 编码后经所属 game 转发（net 默认处理）
 func (s *Server) forwardC2S(ev cellnet.Event) {
+	if ev.Session().Peer().TypeName() != "gorillaws.Acceptor" {
+		return
+	}
 	ses := ev.Session()
 	msg := ev.Message()
 

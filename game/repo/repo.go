@@ -32,6 +32,8 @@ type UserRepo interface {
 	// CreateRole 插入角色（role.Account 为归属账号，role.ID 由调用方生成）；
 	// 重名返回 ErrRoleNameExists
 	CreateRole(ctx context.Context, role *model.Role) error
+	// UpdateRole 更新角色成长字段（按 role_id + account 限定归属）
+	UpdateRole(ctx context.Context, role *model.Role) error
 	// EnsureIndexes 创建唯一索引，失败返回 error（启动时调用一次）
 	EnsureIndexes(ctx context.Context) error
 }

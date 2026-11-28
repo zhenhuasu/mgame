@@ -15,6 +15,7 @@ import (
 	"github.com/zhenhuasu/mgame/game/guildclient"
 	"github.com/zhenhuasu/mgame/game/handler"
 	"github.com/zhenhuasu/mgame/game/network"
+	"github.com/zhenhuasu/mgame/game/rankclient"
 	"github.com/zhenhuasu/mgame/game/repo"
 	"github.com/zhenhuasu/mgame/game/service"
 )
@@ -71,7 +72,12 @@ func main() {
 	ccancel()
 	stored := repo.NewCached(r, rdb, cfg.User.Prefix, time.Duration(cfg.User.TTL)*time.Second)
 
-	mgr := service.NewUserManager(stored, service.NewRoleIDGen(rdb, ""), cfg.User.AutoCreateRole)
+	mgr := service.NewUserManager(stored, service.NewRoleIDGen(rdb, ""), cfg.User.AutoCreateRole,
+		service.RoleRules{
+			ExpBase:       cfg.Role.ExpBase,
+			PowerPerLevel: cfg.Role.PowerPerLevel,
+			MaxLevel:      cfg.Role.MaxLevel,
+		})
 
 	// guild 连接池：registry 启用时按注册中心发现 guild，否则静态 GuildServers
 	var gdis discover.Discovery = discover.Static(cfg.GuildServers)
@@ -81,9 +87,19 @@ func main() {
 	guildclient.SetSecret(cfg.GuildSecret)
 	gpool := guildclient.New(cfg.GameID, gdis)
 
-	h := handler.New(mgr, cfg.GateSecret, gpool)
+	var rdis discover.Discovery = discover.Static(cfg.RankServers)
+	if reg := net.Registry(); reg != nil {
+		rdis = discover.NewRegistry(reg, registry.ServiceRank, rdis)
+	}
+	rankclient.SetSecret(cfg.RankSecret)
+	rpool := rankclient.New(cfg.GameID, rdis)
+
+	h := handler.New(mgr, cfg.GateSecret, gpool, rpool)
+	mgr.SetProgressNotifier(h)
 	gpool.SetForwarder(h)
+	rpool.SetForwarder(h)
 	gpool.Start(ctx)
+	rpool.Start(ctx)
 
 	// 监听 gate 连入（内部阻塞在事件循环，ctx 取消后返回）
 	if err := network.Listen(ctx, cfg, h); err != nil {

@@ -34,7 +34,11 @@ type roleDoc struct {
 	Account   string    `bson:"account"`
 	Name      string    `bson:"name"`
 	Level     int32     `bson:"level"`
+	Avatar    string    `bson:"avatar"`
+	Exp       int64     `bson:"exp"`
+	Power     int64     `bson:"power"`
 	CreatedAt time.Time `bson:"created_at"`
+	UpdatedAt time.Time `bson:"updated_at"`
 }
 
 // roleIDDoc 仅取角色 ID 的投影
@@ -142,7 +146,10 @@ func (r *mongoRepo) LoadRoles(ctx context.Context, account string) ([]model.Role
 	}
 	out := make([]model.Role, 0, len(docs))
 	for _, rd := range docs {
-		out = append(out, model.Role{ID: rd.RoleID, Account: rd.Account, Name: rd.Name, Level: rd.Level})
+		out = append(out, model.Role{
+			ID: rd.RoleID, Account: rd.Account, Name: rd.Name, Level: rd.Level,
+			Avatar: rd.Avatar, Exp: rd.Exp, Power: rd.Power,
+		})
 	}
 	return out, nil
 }
@@ -153,7 +160,10 @@ func (r *mongoRepo) LoadRole(ctx context.Context, account string, roleID int64) 
 	if err != nil || !ok {
 		return nil, ok, err
 	}
-	return &model.Role{ID: doc.RoleID, Account: doc.Account, Name: doc.Name, Level: doc.Level}, true, nil
+	return &model.Role{
+		ID: doc.RoleID, Account: doc.Account, Name: doc.Name, Level: doc.Level,
+		Avatar: doc.Avatar, Exp: doc.Exp, Power: doc.Power,
+	}, true, nil
 }
 
 // LoadRoleByName 按角色名（全局唯一）读取角色
@@ -162,7 +172,10 @@ func (r *mongoRepo) LoadRoleByName(ctx context.Context, name string) (*model.Rol
 	if err != nil || !ok {
 		return nil, ok, err
 	}
-	return &model.Role{ID: doc.RoleID, Account: doc.Account, Name: doc.Name, Level: doc.Level}, true, nil
+	return &model.Role{
+		ID: doc.RoleID, Account: doc.Account, Name: doc.Name, Level: doc.Level,
+		Avatar: doc.Avatar, Exp: doc.Exp, Power: doc.Power,
+	}, true, nil
 }
 
 // CreateRole 插入角色（不写 users，角色归属由 roles.account 表达）；
@@ -173,7 +186,11 @@ func (r *mongoRepo) CreateRole(ctx context.Context, role *model.Role) error {
 		Account:   role.Account,
 		Name:      role.Name,
 		Level:     role.Level,
+		Avatar:    role.Avatar,
+		Exp:       role.Exp,
+		Power:     role.Power,
 		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	})
 	if err == nil {
 		return nil
@@ -187,4 +204,24 @@ func (r *mongoRepo) CreateRole(ctx context.Context, role *model.Role) error {
 		return ErrRoleNameExists
 	}
 	return fmt.Errorf("insert role %q#%d: duplicate key: %w", role.Account, role.ID, err)
+}
+
+func (r *mongoRepo) UpdateRole(ctx context.Context, role *model.Role) error {
+	res, err := dbmongo.UpdateOne(ctx, r.roles,
+		bson.M{"role_id": role.ID, "account": role.Account},
+		bson.M{"$set": bson.M{
+			"avatar":     role.Avatar,
+			"exp":        role.Exp,
+			"level":      role.Level,
+			"power":      role.Power,
+			"updated_at": time.Now(),
+		}},
+	)
+	if err != nil {
+		return fmt.Errorf("update role %q#%d: %w", role.Account, role.ID, err)
+	}
+	if res.MatchedCount == 0 {
+		return fmt.Errorf("role %d not found", role.ID)
+	}
+	return nil
 }

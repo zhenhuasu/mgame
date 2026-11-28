@@ -29,6 +29,30 @@ type Game struct {
 	GuildSecret string `yaml:"guildSecret"`
 	// 用户数据键配置（game 专属）
 	User UserData `yaml:"user"`
+	// rank 服务地址列表（未启用注册中心时静态连接；空 = 无排行榜服务）
+	RankServers []string `yaml:"rankServers"`
+	// game↔rank 共享密钥（RegisterRank HMAC；空 = 不校验，仅联调）
+	RankSecret string `yaml:"rankSecret"`
+	// 角色成长参数
+	Role RoleData `yaml:"role"`
+}
+
+type RoleData struct {
+	ExpBase       int64 `yaml:"expBase"`
+	PowerPerLevel int64 `yaml:"powerPerLevel"`
+	MaxLevel      int32 `yaml:"maxLevel"`
+}
+
+func (r *RoleData) ApplyDefaults() {
+	if r.ExpBase <= 0 {
+		r.ExpBase = 100
+	}
+	if r.PowerPerLevel <= 0 {
+		r.PowerPerLevel = 100
+	}
+	if r.MaxLevel <= 0 {
+		r.MaxLevel = 100
+	}
 }
 
 // UserData 用户数据（game 专属）：Redis 缓存与角色开关
@@ -69,6 +93,7 @@ func LoadGame(path string) (*Game, error) {
 	cfg.Registry.ApplyDefaults()
 	cfg.Mongo.ApplyDefaults()
 	cfg.User.ApplyDefaults()
+	cfg.Role.ApplyDefaults()
 	if !cfg.Mongo.Enabled() {
 		return nil, errf("mongo.uri required")
 	}

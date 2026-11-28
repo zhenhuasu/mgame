@@ -25,6 +25,31 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type RankUpdateMode int32
+
+const (
+	RankUpdateMode_RANK_UPDATE_DELTA     RankUpdateMode = 0
+	RankUpdateMode_RANK_UPDATE_OVERWRITE RankUpdateMode = 1
+)
+
+var RankUpdateMode_name = map[int32]string{
+	0: "RANK_UPDATE_DELTA",
+	1: "RANK_UPDATE_OVERWRITE",
+}
+
+var RankUpdateMode_value = map[string]int32{
+	"RANK_UPDATE_DELTA":     0,
+	"RANK_UPDATE_OVERWRITE": 1,
+}
+
+func (x RankUpdateMode) String() string {
+	return proto.EnumName(RankUpdateMode_name, int32(x))
+}
+
+func (RankUpdateMode) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_9778376c45113e49, []int{0}
+}
+
 // 握手：gate 连上后先发
 // hmac = base64(HMAC-SHA256(gateSecret, gate_id|ts|nonce))，gateSecret 为空时留空
 type RegisterGate struct {
@@ -809,7 +834,342 @@ func (m *GuildNotify) GetPayload() []byte {
 	return nil
 }
 
+// 握手：gate/game 连上 rank 后先发
+// hmac = base64(HMAC-SHA256(rankSecret, client_id|ts|nonce))，secret 为空时留空
+type RegisterRank struct {
+	ClientId string `protobuf:"bytes,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	Kind     string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
+	Ts       int64  `protobuf:"varint,3,opt,name=ts,proto3" json:"ts,omitempty"`
+	Nonce    string `protobuf:"bytes,4,opt,name=nonce,proto3" json:"nonce,omitempty"`
+	Hmac     string `protobuf:"bytes,5,opt,name=hmac,proto3" json:"hmac,omitempty"`
+}
+
+func (m *RegisterRank) Reset()         { *m = RegisterRank{} }
+func (m *RegisterRank) String() string { return proto.CompactTextString(m) }
+func (*RegisterRank) ProtoMessage()    {}
+func (*RegisterRank) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9778376c45113e49, []int{13}
+}
+func (m *RegisterRank) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RegisterRank) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RegisterRank.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RegisterRank) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RegisterRank.Merge(m, src)
+}
+func (m *RegisterRank) XXX_Size() int {
+	return m.Size()
+}
+func (m *RegisterRank) XXX_DiscardUnknown() {
+	xxx_messageInfo_RegisterRank.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RegisterRank proto.InternalMessageInfo
+
+func (m *RegisterRank) GetClientId() string {
+	if m != nil {
+		return m.ClientId
+	}
+	return ""
+}
+
+func (m *RegisterRank) GetKind() string {
+	if m != nil {
+		return m.Kind
+	}
+	return ""
+}
+
+func (m *RegisterRank) GetTs() int64 {
+	if m != nil {
+		return m.Ts
+	}
+	return 0
+}
+
+func (m *RegisterRank) GetNonce() string {
+	if m != nil {
+		return m.Nonce
+	}
+	return ""
+}
+
+func (m *RegisterRank) GetHmac() string {
+	if m != nil {
+		return m.Hmac
+	}
+	return ""
+}
+
+type RegisterRankAck struct {
+	Code int32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+}
+
+func (m *RegisterRankAck) Reset()         { *m = RegisterRankAck{} }
+func (m *RegisterRankAck) String() string { return proto.CompactTextString(m) }
+func (*RegisterRankAck) ProtoMessage()    {}
+func (*RegisterRankAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9778376c45113e49, []int{14}
+}
+func (m *RegisterRankAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RegisterRankAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RegisterRankAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RegisterRankAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RegisterRankAck.Merge(m, src)
+}
+func (m *RegisterRankAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *RegisterRankAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_RegisterRankAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RegisterRankAck proto.InternalMessageInfo
+
+func (m *RegisterRankAck) GetCode() int32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+type RankProfile struct {
+	RoleId int64  `protobuf:"varint,1,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	Name   string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Avatar string `protobuf:"bytes,3,opt,name=avatar,proto3" json:"avatar,omitempty"`
+	Level  int32  `protobuf:"varint,4,opt,name=level,proto3" json:"level,omitempty"`
+}
+
+func (m *RankProfile) Reset()         { *m = RankProfile{} }
+func (m *RankProfile) String() string { return proto.CompactTextString(m) }
+func (*RankProfile) ProtoMessage()    {}
+func (*RankProfile) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9778376c45113e49, []int{15}
+}
+func (m *RankProfile) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RankProfile) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RankProfile.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RankProfile) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RankProfile.Merge(m, src)
+}
+func (m *RankProfile) XXX_Size() int {
+	return m.Size()
+}
+func (m *RankProfile) XXX_DiscardUnknown() {
+	xxx_messageInfo_RankProfile.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RankProfile proto.InternalMessageInfo
+
+func (m *RankProfile) GetRoleId() int64 {
+	if m != nil {
+		return m.RoleId
+	}
+	return 0
+}
+
+func (m *RankProfile) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *RankProfile) GetAvatar() string {
+	if m != nil {
+		return m.Avatar
+	}
+	return ""
+}
+
+func (m *RankProfile) GetLevel() int32 {
+	if m != nil {
+		return m.Level
+	}
+	return 0
+}
+
+type RankUpdate struct {
+	Profile *RankProfile   `protobuf:"bytes,1,opt,name=profile,proto3" json:"profile,omitempty"`
+	Board   RankBoard      `protobuf:"varint,2,opt,name=board,proto3,enum=gate.RankBoard" json:"board,omitempty"`
+	Mode    RankUpdateMode `protobuf:"varint,3,opt,name=mode,proto3,enum=gate.RankUpdateMode" json:"mode,omitempty"`
+	Value   int64          `protobuf:"varint,4,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (m *RankUpdate) Reset()         { *m = RankUpdate{} }
+func (m *RankUpdate) String() string { return proto.CompactTextString(m) }
+func (*RankUpdate) ProtoMessage()    {}
+func (*RankUpdate) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9778376c45113e49, []int{16}
+}
+func (m *RankUpdate) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RankUpdate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RankUpdate.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RankUpdate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RankUpdate.Merge(m, src)
+}
+func (m *RankUpdate) XXX_Size() int {
+	return m.Size()
+}
+func (m *RankUpdate) XXX_DiscardUnknown() {
+	xxx_messageInfo_RankUpdate.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RankUpdate proto.InternalMessageInfo
+
+func (m *RankUpdate) GetProfile() *RankProfile {
+	if m != nil {
+		return m.Profile
+	}
+	return nil
+}
+
+func (m *RankUpdate) GetBoard() RankBoard {
+	if m != nil {
+		return m.Board
+	}
+	return RankBoard_RANK_BOARD_NONE
+}
+
+func (m *RankUpdate) GetMode() RankUpdateMode {
+	if m != nil {
+		return m.Mode
+	}
+	return RankUpdateMode_RANK_UPDATE_DELTA
+}
+
+func (m *RankUpdate) GetValue() int64 {
+	if m != nil {
+		return m.Value
+	}
+	return 0
+}
+
+type RankChangeNotify struct {
+	RoleId  int64     `protobuf:"varint,1,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	Board   RankBoard `protobuf:"varint,2,opt,name=board,proto3,enum=gate.RankBoard" json:"board,omitempty"`
+	OldRank int32     `protobuf:"varint,3,opt,name=old_rank,json=oldRank,proto3" json:"old_rank,omitempty"`
+	NewRank int32     `protobuf:"varint,4,opt,name=new_rank,json=newRank,proto3" json:"new_rank,omitempty"`
+	Score   int64     `protobuf:"varint,5,opt,name=score,proto3" json:"score,omitempty"`
+}
+
+func (m *RankChangeNotify) Reset()         { *m = RankChangeNotify{} }
+func (m *RankChangeNotify) String() string { return proto.CompactTextString(m) }
+func (*RankChangeNotify) ProtoMessage()    {}
+func (*RankChangeNotify) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9778376c45113e49, []int{17}
+}
+func (m *RankChangeNotify) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RankChangeNotify) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RankChangeNotify.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RankChangeNotify) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RankChangeNotify.Merge(m, src)
+}
+func (m *RankChangeNotify) XXX_Size() int {
+	return m.Size()
+}
+func (m *RankChangeNotify) XXX_DiscardUnknown() {
+	xxx_messageInfo_RankChangeNotify.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RankChangeNotify proto.InternalMessageInfo
+
+func (m *RankChangeNotify) GetRoleId() int64 {
+	if m != nil {
+		return m.RoleId
+	}
+	return 0
+}
+
+func (m *RankChangeNotify) GetBoard() RankBoard {
+	if m != nil {
+		return m.Board
+	}
+	return RankBoard_RANK_BOARD_NONE
+}
+
+func (m *RankChangeNotify) GetOldRank() int32 {
+	if m != nil {
+		return m.OldRank
+	}
+	return 0
+}
+
+func (m *RankChangeNotify) GetNewRank() int32 {
+	if m != nil {
+		return m.NewRank
+	}
+	return 0
+}
+
+func (m *RankChangeNotify) GetScore() int64 {
+	if m != nil {
+		return m.Score
+	}
+	return 0
+}
+
 func init() {
+	proto.RegisterEnum("gate.RankUpdateMode", RankUpdateMode_name, RankUpdateMode_value)
 	proto.RegisterType((*RegisterGate)(nil), "gate.RegisterGate")
 	proto.RegisterType((*RegisterAck)(nil), "gate.RegisterAck")
 	proto.RegisterType((*PlayerOnline)(nil), "gate.PlayerOnline")
@@ -823,46 +1183,68 @@ func init() {
 	proto.RegisterType((*RegisterGame)(nil), "gate.RegisterGame")
 	proto.RegisterType((*GuildS2C)(nil), "gate.GuildS2C")
 	proto.RegisterType((*GuildNotify)(nil), "gate.GuildNotify")
+	proto.RegisterType((*RegisterRank)(nil), "gate.RegisterRank")
+	proto.RegisterType((*RegisterRankAck)(nil), "gate.RegisterRankAck")
+	proto.RegisterType((*RankProfile)(nil), "gate.RankProfile")
+	proto.RegisterType((*RankUpdate)(nil), "gate.RankUpdate")
+	proto.RegisterType((*RankChangeNotify)(nil), "gate.RankChangeNotify")
 }
 
 func init() { proto.RegisterFile("inner.proto", fileDescriptor_9778376c45113e49) }
 
 var fileDescriptor_9778376c45113e49 = []byte{
-	// 539 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0x4f, 0x8b, 0xd3, 0x40,
-	0x14, 0x6f, 0x92, 0x26, 0x6d, 0x5f, 0xbb, 0x45, 0x06, 0x75, 0x83, 0x62, 0xa8, 0x61, 0x85, 0x9c,
-	0x5a, 0x58, 0x4f, 0xea, 0x41, 0x54, 0x70, 0x2d, 0xac, 0xbb, 0x32, 0x0a, 0x82, 0x17, 0x99, 0x4d,
-	0xa6, 0xe9, 0x60, 0x66, 0xa6, 0x26, 0x93, 0x95, 0xfa, 0x29, 0xfc, 0x0c, 0x7e, 0x1a, 0x8f, 0x7b,
-	0xf4, 0x28, 0xed, 0x17, 0x91, 0x99, 0x24, 0x6e, 0x8b, 0xdb, 0xc3, 0xa2, 0x97, 0xf0, 0x7e, 0xef,
-	0xfd, 0xde, 0xff, 0x79, 0x81, 0x3e, 0x13, 0x82, 0xe6, 0xe3, 0x45, 0x2e, 0x95, 0x44, 0xed, 0x94,
-	0x28, 0x7a, 0x07, 0xf4, 0xb7, 0xd2, 0x84, 0x04, 0x06, 0x98, 0xa6, 0xac, 0x50, 0x34, 0x3f, 0x22,
-	0x8a, 0xa2, 0x7d, 0xe8, 0x68, 0xeb, 0x47, 0x96, 0xf8, 0xd6, 0xc8, 0x8a, 0x7a, 0xd8, 0xd3, 0x70,
-	0x9a, 0xa0, 0x21, 0xd8, 0xaa, 0xf0, 0xed, 0x91, 0x15, 0x39, 0xd8, 0x56, 0x05, 0xba, 0x09, 0xae,
-	0x90, 0x22, 0xa6, 0xbe, 0x63, 0x68, 0x15, 0x40, 0x08, 0xda, 0x73, 0x4e, 0x62, 0xbf, 0x6d, 0x94,
-	0x46, 0x0e, 0xef, 0x43, 0xbf, 0x49, 0xf1, 0x2c, 0xfe, 0xa4, 0x29, 0xb1, 0x4c, 0xa8, 0x09, 0xef,
-	0x62, 0x23, 0x87, 0x8f, 0x61, 0xf0, 0x26, 0x23, 0x4b, 0x9a, 0x9f, 0x8a, 0x8c, 0x09, 0x8a, 0x6e,
-	0x80, 0x53, 0xd6, 0x15, 0x38, 0x58, 0x8b, 0xc8, 0x87, 0x0e, 0x89, 0x63, 0x59, 0x0a, 0x65, 0x6a,
-	0xe8, 0xe1, 0x06, 0x86, 0x8f, 0x60, 0xaf, 0xf6, 0x9d, 0xcd, 0x76, 0x38, 0xdf, 0x06, 0x2f, 0xa7,
-	0xa4, 0x90, 0xc2, 0xf8, 0xba, 0xb8, 0x46, 0x61, 0x0c, 0xfd, 0xca, 0xf5, 0x58, 0xa6, 0x4c, 0x5c,
-	0x27, 0xab, 0x1e, 0x07, 0x5b, 0xd4, 0xbd, 0xdb, 0x6c, 0xa1, 0x99, 0xe7, 0x34, 0x2f, 0x98, 0x14,
-	0x75, 0xef, 0x0d, 0x0c, 0x15, 0x0c, 0x37, 0x92, 0xe8, 0x09, 0xfc, 0x9d, 0xa7, 0x99, 0x89, 0x7d,
-	0x39, 0x93, 0x8d, 0xa2, 0xab, 0x2c, 0x35, 0x42, 0x07, 0xe0, 0xe6, 0x32, 0xa3, 0x85, 0xdf, 0x1e,
-	0x39, 0x51, 0xff, 0x70, 0x38, 0x36, 0xdb, 0xc4, 0x32, 0xa3, 0x53, 0x31, 0x93, 0xb8, 0x32, 0x86,
-	0xdf, 0x2d, 0xe8, 0xbe, 0xcb, 0x89, 0x28, 0x38, 0x53, 0x57, 0x24, 0xdc, 0x87, 0x8e, 0xe6, 0xe9,
-	0x35, 0x57, 0x2b, 0xf5, 0x34, 0x9c, 0x26, 0xe8, 0x2e, 0xf4, 0x8c, 0x41, 0x10, 0xde, 0xac, 0xb6,
-	0xab, 0x15, 0x27, 0x84, 0x53, 0x74, 0x0f, 0xc0, 0x18, 0x33, 0x7a, 0x4e, 0x33, 0xd3, 0xa7, 0x8b,
-	0x0d, 0xfd, 0x58, 0x2b, 0xd0, 0x2d, 0xf0, 0x78, 0x91, 0xea, 0x98, 0xee, 0xc8, 0x8a, 0xf6, 0xb0,
-	0xcb, 0x8b, 0x74, 0x6a, 0x86, 0xb8, 0x20, 0xcb, 0x4c, 0x92, 0xc4, 0xf7, 0x46, 0x56, 0x34, 0xc0,
-	0x0d, 0x0c, 0x4f, 0x01, 0x5e, 0xca, 0xfc, 0x0b, 0xc9, 0x93, 0xb7, 0x87, 0x2f, 0xae, 0xa8, 0xf2,
-	0x32, 0xa0, 0xbd, 0x23, 0xa0, 0xb3, 0x1d, 0xf0, 0x00, 0xba, 0xaf, 0x68, 0x96, 0x49, 0x4c, 0x3f,
-	0x6b, 0x56, 0x2c, 0x85, 0xa2, 0x42, 0xd5, 0x2f, 0xb9, 0x81, 0x7f, 0x58, 0x7a, 0x17, 0xbb, 0x59,
-	0x5b, 0x97, 0xc1, 0xeb, 0xcb, 0xe0, 0xdb, 0x97, 0xc1, 0xff, 0xed, 0x32, 0x5e, 0x43, 0xf7, 0xa8,
-	0x64, 0xd9, 0xff, 0xea, 0xfe, 0x3d, 0xf4, 0x4d, 0xb8, 0x13, 0xa9, 0xd8, 0x6c, 0xb9, 0xb9, 0x63,
-	0x6b, 0x6b, 0xc7, 0xd7, 0x0d, 0xfc, 0xfc, 0xe9, 0x8f, 0x55, 0x60, 0x5d, 0xac, 0x02, 0xeb, 0xd7,
-	0x2a, 0xb0, 0xbe, 0xad, 0x83, 0xd6, 0xc5, 0x3a, 0x68, 0xfd, 0x5c, 0x07, 0xad, 0x0f, 0x0f, 0x52,
-	0xa6, 0xe6, 0xe5, 0xd9, 0x38, 0x96, 0x7c, 0xf2, 0x75, 0x4e, 0xc5, 0xbc, 0x24, 0x45, 0x39, 0xe1,
-	0x7a, 0x32, 0x13, 0xf3, 0x83, 0x79, 0xa2, 0x5f, 0xe7, 0x99, 0x67, 0xe4, 0x87, 0xbf, 0x03, 0x00,
-	0x00, 0xff, 0xff, 0x27, 0xad, 0xfd, 0x44, 0x8d, 0x04, 0x00, 0x00,
+	// 802 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0xdd, 0x6e, 0xda, 0x48,
+	0x14, 0xc6, 0x18, 0x03, 0x39, 0x24, 0x84, 0x8c, 0x92, 0x0d, 0xd9, 0xd5, 0x22, 0xd6, 0x4a, 0x24,
+	0xb4, 0x2b, 0x25, 0x12, 0x7b, 0xb5, 0xdb, 0x8b, 0x8a, 0x24, 0x34, 0x45, 0xcd, 0x9f, 0xa6, 0xa4,
+	0x91, 0x7a, 0x83, 0x26, 0xf6, 0x00, 0x16, 0xf6, 0x0c, 0xb5, 0x07, 0x22, 0xfa, 0x14, 0x7d, 0x82,
+	0xaa, 0xea, 0xd3, 0xf4, 0x32, 0x97, 0xbd, 0xac, 0x92, 0x17, 0xa9, 0x66, 0xc6, 0x2e, 0xa0, 0x04,
+	0xb5, 0x51, 0x7b, 0x83, 0xe6, 0x9b, 0xf3, 0xcd, 0xf9, 0xf9, 0xce, 0x39, 0x06, 0x0a, 0x1e, 0x63,
+	0x34, 0xdc, 0x1d, 0x86, 0x5c, 0x70, 0x94, 0xe9, 0x11, 0x41, 0x7f, 0x07, 0xf9, 0xab, 0x6f, 0x6c,
+	0x02, 0xcb, 0x98, 0xf6, 0xbc, 0x48, 0xd0, 0xf0, 0x88, 0x08, 0x8a, 0x36, 0x21, 0x27, 0xad, 0x1d,
+	0xcf, 0x2d, 0x1b, 0x55, 0xa3, 0xb6, 0x84, 0xb3, 0x12, 0xb6, 0x5c, 0x54, 0x84, 0xb4, 0x88, 0xca,
+	0xe9, 0xaa, 0x51, 0x33, 0x71, 0x5a, 0x44, 0x68, 0x1d, 0x2c, 0xc6, 0x99, 0x43, 0xcb, 0xa6, 0xa2,
+	0x69, 0x80, 0x10, 0x64, 0xfa, 0x01, 0x71, 0xca, 0x19, 0x75, 0xa9, 0xce, 0xf6, 0x5f, 0x50, 0x48,
+	0x42, 0x34, 0x9c, 0x81, 0xa4, 0x38, 0xdc, 0xa5, 0xca, 0xbd, 0x85, 0xd5, 0xd9, 0xfe, 0x1f, 0x96,
+	0xcf, 0x7d, 0x32, 0xa1, 0xe1, 0x19, 0xf3, 0x3d, 0x46, 0x51, 0x09, 0xcc, 0x51, 0x9c, 0x81, 0x89,
+	0xe5, 0x11, 0x95, 0x21, 0x47, 0x1c, 0x87, 0x8f, 0x98, 0x50, 0x39, 0x2c, 0xe1, 0x04, 0xda, 0xff,
+	0xc1, 0x4a, 0xfc, 0xb6, 0xdb, 0x5d, 0xf0, 0xf8, 0x37, 0xc8, 0x86, 0x94, 0x44, 0x9c, 0xa9, 0xb7,
+	0x16, 0x8e, 0x91, 0xed, 0x40, 0x41, 0x3f, 0x3d, 0xe6, 0x3d, 0x8f, 0x3d, 0x26, 0xaa, 0x94, 0xc3,
+	0x1b, 0xc6, 0xb5, 0xa7, 0xbd, 0xa1, 0x64, 0x8e, 0x69, 0x18, 0x79, 0x9c, 0xc5, 0xb5, 0x27, 0xd0,
+	0x16, 0x50, 0x9c, 0x09, 0x22, 0x15, 0xb8, 0x1f, 0x27, 0xd1, 0x24, 0x3d, 0xd5, 0x64, 0x26, 0x69,
+	0x1d, 0x25, 0x46, 0x68, 0x1b, 0xac, 0x90, 0xfb, 0x34, 0x2a, 0x67, 0xaa, 0x66, 0xad, 0x50, 0x2f,
+	0xee, 0xaa, 0x6e, 0x62, 0xee, 0xd3, 0x16, 0xeb, 0x72, 0xac, 0x8d, 0xf6, 0x47, 0x03, 0xf2, 0xed,
+	0x90, 0xb0, 0x28, 0xf0, 0xc4, 0x03, 0x01, 0x37, 0x21, 0x27, 0x79, 0xb2, 0xcd, 0xba, 0xa5, 0x59,
+	0x09, 0x5b, 0x2e, 0xfa, 0x03, 0x96, 0x94, 0x81, 0x91, 0x20, 0x69, 0x6d, 0x5e, 0x5e, 0x9c, 0x92,
+	0x80, 0xa2, 0x3f, 0x01, 0x94, 0xd1, 0xa7, 0x63, 0xea, 0xab, 0x3a, 0x2d, 0xac, 0xe8, 0xc7, 0xf2,
+	0x02, 0x6d, 0x40, 0x36, 0x88, 0x7a, 0xd2, 0xa7, 0x55, 0x35, 0x6a, 0x2b, 0xd8, 0x0a, 0xa2, 0x5e,
+	0x4b, 0x89, 0x38, 0x24, 0x13, 0x9f, 0x13, 0xb7, 0x9c, 0xad, 0x1a, 0xb5, 0x65, 0x9c, 0x40, 0xfb,
+	0x0c, 0xe0, 0x19, 0x0f, 0xaf, 0x49, 0xe8, 0xbe, 0xac, 0x1f, 0x3c, 0x90, 0xe5, 0xd4, 0x61, 0x7a,
+	0x81, 0x43, 0x73, 0xde, 0xe1, 0x36, 0xe4, 0x9f, 0x53, 0xdf, 0xe7, 0x98, 0xbe, 0x91, 0x2c, 0x87,
+	0x33, 0x41, 0x99, 0x88, 0x27, 0x39, 0x81, 0xdf, 0x58, 0xb2, 0x17, 0x8b, 0x59, 0x73, 0x9b, 0x11,
+	0xc4, 0x9b, 0x11, 0xcc, 0x6f, 0x46, 0xf0, 0x73, 0x9b, 0x71, 0x02, 0xf9, 0xa3, 0x91, 0xe7, 0xff,
+	0xaa, 0xea, 0x2f, 0xa1, 0xa0, 0xdc, 0x9d, 0x72, 0xe1, 0x75, 0x27, 0xb3, 0x3d, 0x36, 0xe6, 0x7a,
+	0xfc, 0x68, 0xc7, 0x93, 0xa9, 0x14, 0x98, 0xb0, 0x81, 0x1c, 0x12, 0xc7, 0xf7, 0x28, 0x13, 0x53,
+	0x31, 0xf2, 0xfa, 0xa2, 0xa5, 0x66, 0x79, 0xe0, 0x31, 0x37, 0x5e, 0x18, 0x75, 0x8e, 0x25, 0x32,
+	0xef, 0x4b, 0x94, 0x79, 0x48, 0x22, 0x6b, 0x46, 0xa2, 0x1d, 0x58, 0x9d, 0x0d, 0xbd, 0xe8, 0x03,
+	0xd2, 0x87, 0x82, 0x34, 0x9f, 0x87, 0xbc, 0xeb, 0xf9, 0x74, 0x71, 0xe9, 0x08, 0x32, 0x6a, 0xb2,
+	0xe3, 0xe4, 0xe4, 0x59, 0x2e, 0x1a, 0x19, 0x13, 0x41, 0xc2, 0x64, 0xd1, 0x34, 0x92, 0x49, 0xce,
+	0x0e, 0xba, 0x06, 0xf6, 0x07, 0x03, 0x40, 0x86, 0xba, 0x18, 0xba, 0xf2, 0x7b, 0xf9, 0x0f, 0xe4,
+	0x86, 0x3a, 0xa8, 0x8a, 0x54, 0xa8, 0xaf, 0xc5, 0xfb, 0x38, 0xcd, 0x06, 0x27, 0x0c, 0xb4, 0x03,
+	0xd6, 0x15, 0x27, 0xa1, 0xd6, 0xa6, 0x58, 0x5f, 0x9d, 0x52, 0xf7, 0xe5, 0x35, 0xd6, 0x56, 0x54,
+	0x83, 0x4c, 0x20, 0x0b, 0x34, 0x15, 0x6b, 0x7d, 0xca, 0xd2, 0x31, 0x4f, 0xb8, 0x4b, 0xb1, 0x62,
+	0xc8, 0x14, 0xc7, 0xc4, 0x1f, 0x69, 0x1d, 0x4d, 0xac, 0x81, 0xfd, 0xde, 0x80, 0x92, 0xa4, 0x1f,
+	0xf4, 0x09, 0xeb, 0xd1, 0xef, 0x4d, 0xc3, 0x0f, 0x26, 0xb5, 0x05, 0x79, 0xee, 0xbb, 0x9d, 0x90,
+	0xb0, 0x81, 0x4a, 0xcc, 0xc2, 0x39, 0xee, 0xbb, 0x6a, 0x1c, 0xb6, 0x20, 0xcf, 0xe8, 0xb5, 0x36,
+	0x69, 0xad, 0x72, 0x8c, 0x5e, 0x2b, 0xd3, 0x3a, 0x58, 0x91, 0xc3, 0x43, 0xaa, 0x7a, 0x6a, 0x62,
+	0x0d, 0xfe, 0xde, 0x87, 0xe2, 0x7c, 0x39, 0x68, 0x03, 0xd6, 0x70, 0xe3, 0xf4, 0x45, 0xe7, 0xe2,
+	0xfc, 0xb0, 0xd1, 0x6e, 0x76, 0x0e, 0x9b, 0xc7, 0xed, 0x46, 0x29, 0x85, 0xb6, 0x60, 0x63, 0xf6,
+	0xfa, 0xec, 0x55, 0x13, 0x5f, 0xe2, 0x56, 0xbb, 0x59, 0x32, 0xf6, 0x9f, 0x7e, 0xba, 0xad, 0x18,
+	0x37, 0xb7, 0x15, 0xe3, 0xcb, 0x6d, 0xc5, 0x78, 0x77, 0x57, 0x49, 0xdd, 0xdc, 0x55, 0x52, 0x9f,
+	0xef, 0x2a, 0xa9, 0xd7, 0x3b, 0x3d, 0x4f, 0xf4, 0x47, 0x57, 0xbb, 0x0e, 0x0f, 0xf6, 0xde, 0xf6,
+	0x29, 0xeb, 0x8f, 0x48, 0x34, 0xda, 0x0b, 0xe4, 0xb6, 0xee, 0xa9, 0x3f, 0xbd, 0x27, 0xb2, 0xc2,
+	0xab, 0xac, 0x3a, 0xff, 0xfb, 0x35, 0x00, 0x00, 0xff, 0xff, 0x7b, 0x86, 0x73, 0xf8, 0x21, 0x07,
+	0x00, 0x00,
 }
 
 func (m *RegisterGate) Marshal() (dAtA []byte, err error) {
@@ -1399,6 +1781,235 @@ func (m *GuildNotify) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *RegisterRank) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RegisterRank) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RegisterRank) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Hmac) > 0 {
+		i -= len(m.Hmac)
+		copy(dAtA[i:], m.Hmac)
+		i = encodeVarintInner(dAtA, i, uint64(len(m.Hmac)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Nonce) > 0 {
+		i -= len(m.Nonce)
+		copy(dAtA[i:], m.Nonce)
+		i = encodeVarintInner(dAtA, i, uint64(len(m.Nonce)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Ts != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.Ts))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Kind) > 0 {
+		i -= len(m.Kind)
+		copy(dAtA[i:], m.Kind)
+		i = encodeVarintInner(dAtA, i, uint64(len(m.Kind)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ClientId) > 0 {
+		i -= len(m.ClientId)
+		copy(dAtA[i:], m.ClientId)
+		i = encodeVarintInner(dAtA, i, uint64(len(m.ClientId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RegisterRankAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RegisterRankAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RegisterRankAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Code != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RankProfile) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RankProfile) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RankProfile) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Level != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.Level))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Avatar) > 0 {
+		i -= len(m.Avatar)
+		copy(dAtA[i:], m.Avatar)
+		i = encodeVarintInner(dAtA, i, uint64(len(m.Avatar)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintInner(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.RoleId != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.RoleId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RankUpdate) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RankUpdate) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RankUpdate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Value != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.Value))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Mode != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.Mode))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Board != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.Board))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Profile != nil {
+		{
+			size, err := m.Profile.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintInner(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RankChangeNotify) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RankChangeNotify) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RankChangeNotify) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Score != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.Score))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.NewRank != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.NewRank))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.OldRank != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.OldRank))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Board != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.Board))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.RoleId != 0 {
+		i = encodeVarintInner(dAtA, i, uint64(m.RoleId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintInner(dAtA []byte, offset int, v uint64) int {
 	offset -= sovInner(v)
 	base := offset
@@ -1658,6 +2269,115 @@ func (m *GuildNotify) Size() (n int) {
 	l = len(m.Payload)
 	if l > 0 {
 		n += 1 + l + sovInner(uint64(l))
+	}
+	return n
+}
+
+func (m *RegisterRank) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ClientId)
+	if l > 0 {
+		n += 1 + l + sovInner(uint64(l))
+	}
+	l = len(m.Kind)
+	if l > 0 {
+		n += 1 + l + sovInner(uint64(l))
+	}
+	if m.Ts != 0 {
+		n += 1 + sovInner(uint64(m.Ts))
+	}
+	l = len(m.Nonce)
+	if l > 0 {
+		n += 1 + l + sovInner(uint64(l))
+	}
+	l = len(m.Hmac)
+	if l > 0 {
+		n += 1 + l + sovInner(uint64(l))
+	}
+	return n
+}
+
+func (m *RegisterRankAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovInner(uint64(m.Code))
+	}
+	return n
+}
+
+func (m *RankProfile) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.RoleId != 0 {
+		n += 1 + sovInner(uint64(m.RoleId))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovInner(uint64(l))
+	}
+	l = len(m.Avatar)
+	if l > 0 {
+		n += 1 + l + sovInner(uint64(l))
+	}
+	if m.Level != 0 {
+		n += 1 + sovInner(uint64(m.Level))
+	}
+	return n
+}
+
+func (m *RankUpdate) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Profile != nil {
+		l = m.Profile.Size()
+		n += 1 + l + sovInner(uint64(l))
+	}
+	if m.Board != 0 {
+		n += 1 + sovInner(uint64(m.Board))
+	}
+	if m.Mode != 0 {
+		n += 1 + sovInner(uint64(m.Mode))
+	}
+	if m.Value != 0 {
+		n += 1 + sovInner(uint64(m.Value))
+	}
+	return n
+}
+
+func (m *RankChangeNotify) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.RoleId != 0 {
+		n += 1 + sovInner(uint64(m.RoleId))
+	}
+	if m.Board != 0 {
+		n += 1 + sovInner(uint64(m.Board))
+	}
+	if m.OldRank != 0 {
+		n += 1 + sovInner(uint64(m.OldRank))
+	}
+	if m.NewRank != 0 {
+		n += 1 + sovInner(uint64(m.NewRank))
+	}
+	if m.Score != 0 {
+		n += 1 + sovInner(uint64(m.Score))
 	}
 	return n
 }
@@ -3276,6 +3996,712 @@ func (m *GuildNotify) Unmarshal(dAtA []byte) error {
 				m.Payload = []byte{}
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipInner(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthInner
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RegisterRank) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowInner
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RegisterRank: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RegisterRank: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClientId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthInner
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthInner
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClientId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthInner
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthInner
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Kind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Ts", wireType)
+			}
+			m.Ts = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Ts |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Nonce", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthInner
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthInner
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Nonce = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hmac", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthInner
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthInner
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hmac = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipInner(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthInner
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RegisterRankAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowInner
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RegisterRankAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RegisterRankAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipInner(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthInner
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RankProfile) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowInner
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RankProfile: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RankProfile: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleId", wireType)
+			}
+			m.RoleId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RoleId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthInner
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthInner
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Avatar", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthInner
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthInner
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Avatar = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Level", wireType)
+			}
+			m.Level = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Level |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipInner(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthInner
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RankUpdate) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowInner
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RankUpdate: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RankUpdate: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Profile", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthInner
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthInner
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Profile == nil {
+				m.Profile = &RankProfile{}
+			}
+			if err := m.Profile.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Board", wireType)
+			}
+			m.Board = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Board |= RankBoard(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Mode", wireType)
+			}
+			m.Mode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Mode |= RankUpdateMode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			m.Value = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Value |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipInner(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthInner
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RankChangeNotify) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowInner
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RankChangeNotify: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RankChangeNotify: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleId", wireType)
+			}
+			m.RoleId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RoleId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Board", wireType)
+			}
+			m.Board = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Board |= RankBoard(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OldRank", wireType)
+			}
+			m.OldRank = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.OldRank |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NewRank", wireType)
+			}
+			m.NewRank = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.NewRank |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Score", wireType)
+			}
+			m.Score = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowInner
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Score |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipInner(dAtA[iNdEx:])

@@ -128,6 +128,21 @@ func (g *Pool) disconnect(addr string) {
 	log.Infof("guild connector stop addr=%s", addr)
 }
 
+func (g *Pool) owns(addr string) bool {
+	g.mu.Lock()
+	_, ok := g.conns[addr]
+	g.mu.Unlock()
+	if ok {
+		return true
+	}
+	for _, a := range g.dis.Addrs() {
+		if a == addr {
+			return true
+		}
+	}
+	return false
+}
+
 func (g *Pool) setUp(addr string, up bool) {
 	g.mu.Lock()
 	g.up[addr] = up
